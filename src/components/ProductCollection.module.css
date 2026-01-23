@@ -1,0 +1,179 @@
+.section {
+    padding: 6rem 0;
+    background-color: var(--color-bg-light);
+}
+
+.headline {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.leftStack {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.productCard {
+    background-color: #F8F8F8;
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    transition: transform 0.3s ease;
+    flex: 1;
+}
+
+.productCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.productTitle {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.price {
+    font-family: var(--font-body);
+    font-weight: 700;
+}
+
+.variantCardContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.smallImage {
+    width: 100px;
+    height: 100px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.featuredCard {
+    background-color: #F3F5F1;
+    border-radius: 24px;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.featuredContent {
+    max-width: 50%;
+}
+
+.featuredTitle {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.featuredDesc {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.featuredPrice {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+.featuredImage {
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, #5C8C4E, #3A5C32);
+    border-radius: 50%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.bottomRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.accessoryCard {
+    background-color: #FAFAFA;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.accImage {
+    width: 80px;
+    height: 80px;
+    background: #eee;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+}
+
+.accTitle {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.accPrice {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.ctaContainer {
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.exploreBtn {
+    background-color: var(--color-accent);
+    color: #0B1A12;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.exploreBtn:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 5px 15px rgba(185, 255, 61, 0.4);
+}
+
+@media (max-width: 900px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .bottomRow {
+        grid-template-columns: 1fr;
+    }
+
+    .featuredCard {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .featuredContent {
+        max-width: 100%;
+    }
+}

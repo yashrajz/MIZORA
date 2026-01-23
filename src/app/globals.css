@@ -1,0 +1,47 @@
+:root {
+  --color-bg-dark: #0B1A12;
+  --color-bg-light: #F4F1E8;
+  --color-accent: #B9FF3D;
+
+  --color-text-white: #FFFFFF;
+  --color-text-muted: rgba(255, 255, 255, 0.8);
+  --color-text-dark: #1A1A1A;
+
+  --font-heading: var(--font-playfair-display);
+  --font-body: var(--font-inter);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  /* overflow-x: hidden; - Removed to fix sticky scroll behavior */
+  font-family: var(--font-body);
+  background: var(--color-bg-light);
+  color: var(--color-text-dark);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Utility for section structure */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
