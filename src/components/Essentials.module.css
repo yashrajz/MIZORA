@@ -61,4 +61,9 @@
     .grid {
         grid-template-columns: 1fr;
     }
+
+    .card {
+        height: auto;
+        min-height: 400px;
+    }
 }

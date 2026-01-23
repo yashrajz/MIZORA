@@ -170,8 +170,8 @@
 
 @media (max-width: 768px) {
     .heroWrapper {
-        height: 350vh;
-        /* Shorter scroll on mobile */
+        height: 300vh;
+        /* Optimized for mobile feel */
     }
 
     .overlayGrid {
@@ -204,6 +204,18 @@
     }
 
     .headline {
-        font-size: 3.5rem;
+        font-size: 3rem;
+        /* Slightly smaller for better fit */
+        line-height: title;
+    }
+
+    .subHeadline {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .cta {
+        padding: 1rem 3rem;
+        font-size: 0.9rem;
     }
 }

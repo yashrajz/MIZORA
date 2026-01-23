@@ -92,9 +92,18 @@
 @media (max-width: 900px) {
     .topSection {
         grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .headline {
+        font-size: 2.5rem;
     }
 
     .bottomSection {
         grid-template-columns: 1fr;
+    }
+
+    .imageTile {
+        height: 250px;
     }
 }
