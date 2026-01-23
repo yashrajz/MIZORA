@@ -93,6 +93,11 @@
     .topSection {
         grid-template-columns: 1fr;
         gap: 3rem;
+        text-align: center;
+    }
+
+    .imageGrid {
+        order: -1;
     }
 
     .headline {
@@ -101,6 +106,11 @@
 
     .bottomSection {
         grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .benefitCol {
+        align-items: center;
     }
 
     .imageTile {

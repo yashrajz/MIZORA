@@ -19,7 +19,14 @@ export default function ProductCollection() {
                                 </div>
                                 <span className={styles.price}>$18</span>
                             </div>
-                            <div className={styles.smallImage} style={{ background: '#7A9A5B' }}></div>
+                            <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                <Image
+                                    src="/images/product_culinary_small.png"
+                                    alt="Culinary Grade Powder"
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                         </div>
                         <div className={styles.productCard}>
                             <div className={styles.cardHeader}>
@@ -29,7 +36,14 @@ export default function ProductCollection() {
                                 </div>
                                 <span className={styles.price}>$24</span>
                             </div>
-                            <div className={styles.smallImage} style={{ background: '#A8C686' }}></div>
+                            <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                <Image
+                                    src="/images/product_daily_small.png"
+                                    alt="Daily Usage Powder"
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -80,14 +94,9 @@ export default function ProductCollection() {
                     </div>
                     <div className={styles.accessoryCard}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
-                            {/* Reusing existing or placeholder if I missed generating tea pot specifically, 
-                                 or use another generated asset I might have. 
-                                 I'll use starter kit crop or keep generic for now. 
-                                 Wait, I have no specific 'tea pot' image generated. 
-                                 I'll use starter_kit_combo.png for now as it contains multiple items. */}
                             <Image
-                                src="/images/starter_kit_combo.png"
-                                alt="Tea Pot Set"
+                                src="/images/product_teapot.png"
+                                alt="Tea Pot"
                                 fill
                                 style={{ objectFit: 'cover' }}
                             />

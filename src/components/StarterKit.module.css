@@ -92,10 +92,14 @@
     .container {
         grid-template-columns: 1fr;
         gap: 2rem;
+        text-align: center;
     }
 
     .content {
         padding-left: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .headline {
@@ -108,6 +112,13 @@
 
     .imageArea {
         min-height: 300px;
-        /* Smaller image on mobile */
+    }
+
+    .features {
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
 }

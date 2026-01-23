@@ -168,7 +168,8 @@
     }
 
     .featuredCard {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        /* Image on top */
         text-align: center;
         gap: 2rem;
         padding: 2rem;

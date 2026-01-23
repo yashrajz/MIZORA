@@ -71,12 +71,19 @@
     .mainGrid {
         grid-template-columns: 1fr;
         gap: 3rem;
+        text-align: center;
+    }
+
+    .decorativeRight {
+        order: -1;
+        height: 250px;
     }
 
     .footerNav {
         flex-direction: column;
         gap: 1.5rem;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
     }
 
     .links {
@@ -86,9 +93,5 @@
 
     .headline {
         font-size: 2.2rem;
-    }
-
-    .decorativeRight {
-        height: 200px;
     }
 }
