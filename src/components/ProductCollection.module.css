@@ -75,6 +75,28 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featuredCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ... existing styles ... */
+
+.accessoryCard {
+    background-color: #FAFAFA;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.accessoryCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
 }
 
 .featuredContent {
@@ -113,12 +135,6 @@
     margin-top: 2rem;
 }
 
-.accessoryCard {
-    background-color: #FAFAFA;
-    border-radius: 16px;
-    padding: 1.5rem;
-    text-align: center;
-}
 
 .accImage {
     width: 80px;

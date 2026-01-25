@@ -189,6 +189,8 @@
         height: 100%;
         width: 100%;
         text-align: center;
+        transform: translateY(5.5rem);
+        /* Nudge down approx 3cm to center on glass */
     }
 
     .rightCol {

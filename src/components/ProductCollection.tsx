@@ -11,44 +11,48 @@ export default function ProductCollection() {
                 <div className={styles.mainGrid}>
                     {/* Left Stack */}
                     <div className={styles.leftStack}>
-                        <div className={styles.productCard}>
-                            <div className={styles.cardHeader}>
-                                <div>
-                                    <div className={styles.label}>Starting Grade</div>
-                                    <h3 className={styles.productTitle}>Culinary Grade</h3>
+                        <Link href="/products/culinary-grade-matcha" className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div>
+                                <div className={styles.cardHeader}>
+                                    <div>
+                                        <div className={styles.label}>Starting Grade</div>
+                                        <h3 className={styles.productTitle}>Culinary Grade</h3>
+                                    </div>
+                                    <span className={styles.price}>$18</span>
                                 </div>
-                                <span className={styles.price}>$18</span>
-                            </div>
-                            <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
-                                <Image
-                                    src="/images/product_culinary_small.png"
-                                    alt="Culinary Grade Powder"
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </div>
-                        </div>
-                        <div className={styles.productCard}>
-                            <div className={styles.cardHeader}>
-                                <div>
-                                    <div className={styles.label}>Standard Daily</div>
-                                    <h3 className={styles.productTitle}>Daily Usage</h3>
+                                <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                    <Image
+                                        src="/images/culinary_pouch_main.jpg"
+                                        alt="Culinary Grade Powder"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
                                 </div>
-                                <span className={styles.price}>$24</span>
                             </div>
-                            <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
-                                <Image
-                                    src="/images/product_daily_small.png"
-                                    alt="Daily Usage Powder"
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
+                        </Link>
+                        <Link href="/products/premium-latte-blend" className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div>
+                                <div className={styles.cardHeader}>
+                                    <div>
+                                        <div className={styles.label}>Standard Daily</div>
+                                        <h3 className={styles.productTitle}>Premium Latte Blend</h3>
+                                    </div>
+                                    <span className={styles.price}>$24</span>
+                                </div>
+                                <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                    <Image
+                                        src="/images/latte_pouch_new.png"
+                                        alt="Premium Latte Blend"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
 
                     {/* Right Featured */}
-                    <div className={styles.featuredCard}>
+                    <Link href="/products/ceremonial-grade-matcha" className={styles.featuredCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.featuredContent}>
                             <div className={styles.label}>Best Seller</div>
                             <h3 className={styles.featuredTitle}>Ceremonial Grade Matcha</h3>
@@ -57,18 +61,19 @@ export default function ProductCollection() {
                         </div>
                         <div className={styles.featuredImage} style={{ position: 'relative', overflow: 'hidden' }}>
                             <Image
-                                src="/images/product_ceremonial.png"
+                                src="/images/ceremonial_tin_new.jpg"
                                 alt="Ceremonial Grade Matcha"
                                 fill
                                 style={{ objectFit: 'cover' }}
                             />
                         </div>
-                    </div>
+                    </Link>
                 </div>
 
                 {/* Bottom Accessories */}
+                {/* Bottom Accessories */}
                 <div className={styles.bottomRow}>
-                    <div className={styles.accessoryCard}>
+                    <Link href="/products/bamboo-whisk" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
                             <Image
                                 src="/images/product_whisk.png"
@@ -79,11 +84,11 @@ export default function ProductCollection() {
                         </div>
                         <h4 className={styles.accTitle}>Bamboo Whisk</h4>
                         <span className={styles.accPrice}>$15</span>
-                    </div>
-                    <div className={styles.accessoryCard}>
+                    </Link>
+                    <Link href="/products/matcha-bowl" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
                             <Image
-                                src="/images/hero_matcha_bowl.png"
+                                src="/images/acc_bowl_zen.jpg"
                                 alt="Matcha Bowl"
                                 fill
                                 style={{ objectFit: 'cover' }}
@@ -91,8 +96,8 @@ export default function ProductCollection() {
                         </div>
                         <h4 className={styles.accTitle}>Matcha Bowl</h4>
                         <span className={styles.accPrice}>$35</span>
-                    </div>
-                    <div className={styles.accessoryCard}>
+                    </Link>
+                    <Link href="/products/tea-pot" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
                             <Image
                                 src="/images/product_teapot.png"
@@ -103,14 +108,14 @@ export default function ProductCollection() {
                         </div>
                         <h4 className={styles.accTitle}>Tea Pot</h4>
                         <span className={styles.accPrice}>$40</span>
-                    </div>
+                    </Link>
                 </div>
 
                 <div className={styles.ctaContainer}>
-                    <Link href="/products" className={styles.exploreBtn}>Example All Products</Link>
+                    <Link href="/products" className={styles.exploreBtn}>Explore All Products</Link>
                 </div>
 
             </div>
-        </section>
+        </section >
     );
 }

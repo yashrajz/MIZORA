@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Noto_Serif_JP } from "next/font/google";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} ${notoSerifJP.variable}`}>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

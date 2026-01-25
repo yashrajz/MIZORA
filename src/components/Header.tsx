@@ -1,17 +1,25 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import styles from './Header.module.css';
 
 export default function Header() {
+    const pathname = usePathname();
+    const isHomePage = pathname === '/';
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
+        if (!isHomePage) {
+            setIsScrolled(true);
+            return;
+        }
+
         const handleScroll = () => {
-            // Sticky only after 1500px (image sequence end)
+            // Sticky only after 1500px (image sequence end) on homepage
             setIsScrolled(window.scrollY > 1500);
         };
 
@@ -19,7 +27,7 @@ export default function Header() {
         // Initial check
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [isHomePage]);
 
     const toggleMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -40,8 +48,8 @@ export default function Header() {
                     {/* Desktop Nav */}
                     <nav className={styles.nav}>
                         <Link href="/" className={styles.link}>Home</Link>
-                        <Link href="#products" className={styles.link}>Products</Link>
-                        <Link href="#testimonials" className={styles.link}>Testimonial</Link>
+                        <Link href="/products" className={styles.link}>Products</Link>
+                        <Link href="/#testimonials" className={styles.link}>Testimonial</Link>
                     </nav>
 
                     <div className={styles.actions}>
@@ -65,8 +73,8 @@ export default function Header() {
                 </div>
                 <nav className={styles.mobileNavLinks}>
                     <Link href="/" className={styles.mobileLink} onClick={toggleMenu}>Home</Link>
-                    <Link href="#products" className={styles.mobileLink} onClick={toggleMenu}>Products</Link>
-                    <Link href="#testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonial</Link>
+                    <Link href="/products" className={styles.mobileLink} onClick={toggleMenu}>Products</Link>
+                    <Link href="/#testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonial</Link>
                     <Link href="/signin" className={styles.mobileLink} onClick={toggleMenu}>Sign In</Link>
                 </nav>
             </div>

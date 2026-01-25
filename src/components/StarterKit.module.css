@@ -115,10 +115,23 @@
     }
 
     .features {
-        align-items: flex-start;
-        text-align: left;
+        align-items: center;
+        text-align: center;
         width: 100%;
-        max-width: 400px;
+        max-width: 100%;
         margin: 0 auto;
+    }
+
+    .featureItem {
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bullet {
+        display: none;
+        /* Hide bullets on mobile for centered look */
     }
 }

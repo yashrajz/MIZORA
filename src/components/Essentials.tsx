@@ -1,5 +1,6 @@
 import styles from './Essentials.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Essentials() {
     return (
@@ -8,7 +9,7 @@ export default function Essentials() {
                 <h2 className={styles.headline}>Matcha Pairing Essentials</h2>
 
                 <div className={styles.grid}>
-                    <div className={styles.card}>
+                    <Link href="/products/matcha-latte-mix" className={styles.card} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.imageArea} style={{ position: 'relative' }}>
                             <Image
                                 src="/images/essential_latte.png"
@@ -24,9 +25,9 @@ export default function Essentials() {
                             </div>
                             <span className={styles.priceBadge}>$28</span>
                         </div>
-                    </div>
+                    </Link>
 
-                    <div className={styles.card}>
+                    <Link href="/products/matcha-cake-powder" className={styles.card} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.imageArea} style={{ position: 'relative' }}>
                             <Image
                                 src="/images/essential_cake.png"
@@ -42,7 +43,7 @@ export default function Essentials() {
                             </div>
                             <span className={styles.priceBadge}>$22</span>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </section>
