@@ -194,7 +194,11 @@ export const products: Product[] = [
         subtitle: 'Shape Protection • Porcelain • 抹茶立て',
         price: 12.00,
         description: 'Essential for maintaining the shape of your bamboo whisk (chasen). This porcelain holder ensures your whisk dries properly and prevents the prongs from losing their curve.',
-        images: ['/images/acc_bowl_texture.jpg', '/images/kit_whisk.png'], // Placeholder: reusing texture as abstract ceramic, and whisk image
+        images: [
+            '/images/3rd.jpeg',
+            '/images/1st.jpeg',
+            '/images/2nd.png'
+        ],
         grade: 'Accessory',
         origin: 'Japan',
         weight: '150g',

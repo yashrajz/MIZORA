@@ -6,7 +6,7 @@
 }
 
 .breadcrumbs {
-    padding: 8rem 0 2rem;
+    padding: 1rem 0 2rem;
     /* Clear fixed header */
     color: var(--color-text-muted);
     font-size: 0.9rem;
@@ -262,6 +262,7 @@
 .tabsSection {
     margin-top: 2rem;
     padding-top: 2rem;
+    margin-bottom: 3rem;
 }
 
 .tabList {
@@ -358,6 +359,7 @@
 
 /* Related */
 .relatedSection {
+    margin-top: 5rem;
     margin-bottom: 6rem;
 }
 

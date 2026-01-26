@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Product } from '@/data/products';
+import { Product, products } from '@/data/products';
 import styles from '../../app/products/pdp_layout.module.css';
 import { Star, Heart, Truck, CreditCard, Headphones, Facebook, Twitter, Instagram } from 'lucide-react';
 
@@ -11,11 +11,51 @@ interface ProductDetailClientProps {
     product: Product;
 }
 
+// Size pricing multipliers
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+};
+
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
     const [selectedImage, setSelectedImage] = useState(product.images[0]);
     const [activeTab, setActiveTab] = useState<'desc' | 'info' | 'review'>('info');
     const [quantity, setQuantity] = useState(1);
-    const [selectedSize, setSelectedSize] = useState(product.weight); // Default to product weight
+    
+    // Calculate available sizes based on product type
+    const availableSizes = useMemo(() => {
+        if (product.grade === 'Accessory') {
+            return [product.weight];
+        }
+        return ['30g', '100g', '200g', '500g'];
+    }, [product.grade, product.weight]);
+
+    // Set default size to smallest available
+    const [selectedSize, setSelectedSize] = useState(availableSizes[0]);
+
+    // Calculate current price based on selected size and quantity
+    const currentPrice = useMemo(() => {
+        const basePrice = product.price;
+        const sizeMultiplier = SIZE_MULTIPLIERS[selectedSize] || SIZE_MULTIPLIERS[product.weight] || 1;
+        const baseSizeMultiplier = SIZE_MULTIPLIERS[product.weight] || 1;
+        const adjustedPrice = (basePrice / baseSizeMultiplier) * sizeMultiplier;
+        return adjustedPrice;
+    }, [product.price, product.weight, selectedSize]);
+
+    const totalPrice = useMemo(() => {
+        return currentPrice * quantity;
+    }, [currentPrice, quantity]);
+
+    // Get related products (same grade or category, excluding current product)
+    const relatedProducts = useMemo(() => {
+        return products
+            .filter(p => p.id !== product.id && (p.grade === product.grade || p.bestFor.some(bf => product.bestFor.includes(bf))))
+            .slice(0, 4);
+    }, [product]);
 
     return (
         <div className={`container ${styles.container}`}>
@@ -69,8 +109,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     </div>
 
                     <div className={styles.priceRow}>
-                        <span className={styles.currentPrice}>${product.price.toFixed(2)}</span>
-                        <span className={styles.originalPrice}>${(product.price * 1.2).toFixed(2)}</span>
+                        <span className={styles.currentPrice}>${currentPrice.toFixed(2)}</span>
+                        <span className={styles.originalPrice}>${(currentPrice * 1.2).toFixed(2)}</span>
+                        {quantity > 1 && (
+                            <span style={{ marginLeft: '1rem', color: '#C5A669', fontSize: '0.9rem' }}>
+                                Total: ${totalPrice.toFixed(2)}
+                            </span>
+                        )}
                     </div>
 
                     <p className={styles.description}>
@@ -78,20 +123,22 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     </p>
 
                     {/* Size Selector */}
-                    <div className={styles.selectorRow}>
-                        <span className={styles.selectorLabel}>Size/Volume</span>
-                        <div className={styles.options}>
-                            {[product.weight, '200g', '500g'].map((size, i) => (
-                                <button
-                                    key={i}
-                                    className={`${styles.optionBtn} ${selectedSize === size ? styles.active : ''}`}
-                                    onClick={() => setSelectedSize(size)}
-                                >
-                                    {size}
-                                </button>
-                            ))}
+                    {product.grade !== 'Accessory' && (
+                        <div className={styles.selectorRow}>
+                            <span className={styles.selectorLabel}>Size/Volume</span>
+                            <div className={styles.options}>
+                                {availableSizes.map((size, i) => (
+                                    <button
+                                        key={i}
+                                        className={`${styles.optionBtn} ${selectedSize === size ? styles.active : ''}`}
+                                        onClick={() => setSelectedSize(size)}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Actions */}
                     <div className={styles.actionRow}>
@@ -161,26 +208,60 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </div>
             </div>
 
-            {/* Related Products Placeholder */}
-            <div className={styles.relatedSection}>
-                <h3 className={styles.sectionTitle}>Explore Related Products</h3>
-                {/* Reusing ProductCollection grid logic would go here, simpler version for now */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-                    {/* Mock Cards */}
-                    {[1, 2, 3, 4].map((i) => (
-                        <div key={i} style={{ background: '#fff', borderRadius: '12px', overflow: 'hidden', paddingBottom: '1rem' }}>
-                            <div style={{ background: '#eee', height: '250px', position: 'relative' }}>
-                                <span style={{ position: 'absolute', top: '10px', left: '10px', background: '#0d2e1c', color: '#fff', fontSize: '0.7rem', padding: '2px 8px', borderRadius: '4px' }}>50% off</span>
+            {/* Related Products */}
+            {relatedProducts.length > 0 && (
+                <div className={styles.relatedSection}>
+                    <h3 className={styles.sectionTitle}>Explore Related Products</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                        {relatedProducts.map((relatedProduct) => (
+                        <Link 
+                            key={relatedProduct.id} 
+                            href={`/products/${relatedProduct.slug}`}
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                            <div style={{ background: '#fff', borderRadius: '12px', overflow: 'hidden', paddingBottom: '1rem', cursor: 'pointer', transition: 'transform 0.2s' }}>
+                                <div style={{ background: '#f5f5f5', height: '250px', position: 'relative' }}>
+                                    <Image
+                                        src={relatedProduct.images[0]}
+                                        alt={relatedProduct.name}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                    {relatedProduct.rating >= 4.8 && (
+                                        <span style={{ position: 'absolute', top: '10px', left: '10px', background: '#C5A669', color: '#fff', fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
+                                            Top Rated
+                                        </span>
+                                    )}
+                                </div>
+                                <div style={{ padding: '1rem' }}>
+                                    <div style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{relatedProduct.grade}</div>
+                                    <h4 style={{ color: '#0B1A12', margin: '0.5rem 0', fontSize: '1rem', fontWeight: '600' }}>{relatedProduct.name}</h4>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <div style={{ display: 'flex', color: '#FFD700' }}>
+                                            {[1, 2, 3, 4, 5].map(s => (
+                                                <Star 
+                                                    key={s} 
+                                                    size={12} 
+                                                    fill={s <= Math.round(relatedProduct.rating) ? "#FFD700" : "none"}
+                                                    color="#FFD700"
+                                                />
+                                            ))}
+                                        </div>
+                                        <span style={{ fontSize: '0.75rem', color: '#666' }}>({relatedProduct.reviews})</span>
+                                    </div>
+                                    <div style={{ color: '#C5A669', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                                        ${relatedProduct.price.toFixed(2)}
+                                        <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.85em', fontWeight: 'normal', marginLeft: '0.5rem' }}>
+                                            ${(relatedProduct.price * 1.2).toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div style={{ padding: '1rem' }}>
-                                <div style={{ fontSize: '0.8rem', color: '#666' }}>Skin Care</div>
-                                <h4 style={{ color: '#000', margin: '0.5rem 0' }}>Related Item {i}</h4>
-                                <div style={{ color: '#C5A669', fontWeight: 'bold' }}>$35.00 <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.9em', fontWeight: 'normal' }}>$70.00</span></div>
-                            </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
+            )}
 
             {/* Footer Features */}
             <div className={styles.featuresRow}>
