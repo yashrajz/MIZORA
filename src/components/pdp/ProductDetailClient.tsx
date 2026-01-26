@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/data/products';
 import styles from '../../app/products/pdp_layout.module.css';
-import { Star, Heart, Truck, CreditCard, Headphones, Share2, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Star, Heart, Truck, CreditCard, Headphones, Facebook, Twitter, Instagram } from 'lucide-react';
 
 interface ProductDetailClientProps {
     product: Product;

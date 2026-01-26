@@ -49,7 +49,7 @@ export default function Header() {
                     <nav className={styles.nav}>
                         <Link href="/" className={styles.link}>Home</Link>
                         <Link href="/products" className={styles.link}>Products</Link>
-                        <Link href="/#testimonials" className={styles.link}>Testimonial</Link>
+                        <Link href="/testimonials" className={styles.link}>Testimonials</Link>
                     </nav>
 
                     <div className={styles.actions}>
@@ -74,7 +74,7 @@ export default function Header() {
                 <nav className={styles.mobileNavLinks}>
                     <Link href="/" className={styles.mobileLink} onClick={toggleMenu}>Home</Link>
                     <Link href="/products" className={styles.mobileLink} onClick={toggleMenu}>Products</Link>
-                    <Link href="/#testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonial</Link>
+                    <Link href="/testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonials</Link>
                     <Link href="/signin" className={styles.mobileLink} onClick={toggleMenu}>Sign In</Link>
                 </nav>
             </div>

@@ -2,6 +2,20 @@
 
 Mizora - Premium Matcha in Town. Elegant website featuring scroll-animated swirling matcha canvas in the hero, fixed text & CTA during animation, dark minimalist design, and Japanese-inspired luxury feel. HTML/CSS/JS + GSAP ScrollTrigger. 🍵 Best matcha experience online.
 
+## 📸 Screenshots
+
+### Hero Section
+![Hero Section](public/screenshots/hero-section.png)
+*Captivating hero section featuring animated matcha sequence with "Best Matcha in Town" headline*
+
+### Product Sections
+![Product Sections](public/screenshots/product-sections.png)
+*Starter kits, benefits showcase, and product collections with elegant design*
+
+### All Products Page
+![All Products](public/screenshots/all-products.png)
+*Complete product catalog featuring ceremonial matcha, accessories, and culinary essentials*
+
 ## ✨ Features
 
 ### 🎨 Modern UI/UX
