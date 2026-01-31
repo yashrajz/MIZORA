@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import styles from './Header.module.css';
 
 export default function Header() {
     const pathname = usePathname();
+    const { user } = useAuth();
     const isHomePage = pathname === '/';
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -53,9 +55,16 @@ export default function Header() {
                     </nav>
 
                     <div className={styles.actions}>
-                        <Link href="/signin" className={styles.actionLink}>
-                            <span className={styles.actionText}>Sign In</span>
-                        </Link>
+                        {user ? (
+                            <Link href="/dashboard" className={styles.actionLink}>
+                                <User size={18} />
+                                <span className={styles.actionText}>{user.fullName.split(' ')[0]}</span>
+                            </Link>
+                        ) : (
+                            <Link href="/signin" className={styles.actionLink}>
+                                <span className={styles.actionText}>Sign In</span>
+                            </Link>
+                        )}
                         <Link href="/cart" className={styles.actionLink}>
                             <span className={styles.actionText}>My Cart</span>
                             <ShoppingBag size={18} />
@@ -75,7 +84,11 @@ export default function Header() {
                     <Link href="/" className={styles.mobileLink} onClick={toggleMenu}>Home</Link>
                     <Link href="/products" className={styles.mobileLink} onClick={toggleMenu}>Products</Link>
                     <Link href="/testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonials</Link>
-                    <Link href="/signin" className={styles.mobileLink} onClick={toggleMenu}>Sign In</Link>
+                    {user ? (
+                        <Link href="/dashboard" className={styles.mobileLink} onClick={toggleMenu}>My Account</Link>
+                    ) : (
+                        <Link href="/signin" className={styles.mobileLink} onClick={toggleMenu}>Sign In</Link>
+                    )}
                 </nav>
             </div>
         </>

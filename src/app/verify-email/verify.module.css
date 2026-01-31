@@ -1,0 +1,98 @@
+.main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9f0 0%, #e8ebe0 100%);
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.loadingIcon {
+    color: #4a7c59;
+    margin-bottom: 1.5rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.successIcon {
+    color: #4a7c59;
+    margin-bottom: 1.5rem;
+}
+
+.errorIcon {
+    color: #dc2626;
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-family: var(--font-playfair-display), serif;
+    font-size: 1.75rem;
+    color: #1a1a1a;
+    margin: 0 0 0.75rem 0;
+}
+
+.text {
+    color: #6b7280;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+}
+
+.redirectText {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin: 0 0 1.5rem 0;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.primaryButton {
+    display: inline-block;
+    background: #4a7c59;
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.primaryButton:hover {
+    background: #3d6a4a;
+}
+
+.secondaryButton {
+    display: inline-block;
+    background: white;
+    color: #4a7c59;
+    border: 1px solid #4a7c59;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.secondaryButton:hover {
+    background: #f0fdf4;
+}
