@@ -28,6 +28,21 @@
 
 /* .hidden {} */
 
+/* Hidden/Visible states for nav elements */
+.hiddenElement {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
 .navContainer {
     display: flex;
     justify-content: space-between;
@@ -71,6 +86,67 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.iconLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+}
+
+.iconLink:hover {
+    opacity: 0.7;
+}
+
+.iconLabel {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.iconWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cartBadge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #C5A669;
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wishlistBadge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {

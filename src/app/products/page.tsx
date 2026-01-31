@@ -1,6 +1,7 @@
-import Link from 'next/link';
-import Image from 'next/image';
+'use client';
+
 import { products } from '@/data/products';
+import ProductCard from '@/components/ProductCard';
 import styles from './ProductGrid.module.css';
 
 export default function AllProductsPage() {
@@ -13,25 +14,7 @@ export default function AllProductsPage() {
 
             <div className={styles.grid}>
                 {products.map((product) => (
-                    <Link href={`/products/${product.slug}`} key={product.id} className={styles.card}>
-                        <div className={styles.imageWrapper}>
-                            {/* Use the first image in the array as the thumbnail */}
-                            <Image
-                                src={product.images[0]}
-                                alt={product.name}
-                                fill
-                                className={styles.image}
-                            />
-                        </div>
-                        <div className={styles.content}>
-                            <div className={styles.meta}>
-                                <span className={styles.grade}>{product.grade}</span>
-                                <span className={styles.price}>${product.price}</span>
-                            </div>
-                            <h2 className={styles.name}>{product.name}</h2>
-                            <p className={styles.subtitle_card}>{product.subtitle}</p>
-                        </div>
-                    </Link>
+                    <ProductCard key={product.id} product={product} />
                 ))}
             </div>
         </div>

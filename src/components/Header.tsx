@@ -2,14 +2,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import styles from './Header.module.css';
 
 export default function Header() {
     const pathname = usePathname();
     const { user } = useAuth();
+    const { cart } = useCart();
+    const { wishlist } = useWishlist();
     const isHomePage = pathname === '/';
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,7 +43,7 @@ export default function Header() {
         <>
             <header className={`${styles.header} ${isScrolled ? styles.scrolled : styles.hidden}`}>
                 <div className={`container ${styles.navContainer}`}>
-                    <button className={styles.mobileToggle} onClick={toggleMenu} aria-label="Toggle menu">
+                    <button className={`${styles.mobileToggle} ${isScrolled ? styles.visible : styles.hiddenElement}`} onClick={toggleMenu} aria-label="Toggle menu">
                         <Menu size={24} color={isScrolled ? "white" : "white"} />
                     </button>
 
@@ -48,26 +52,45 @@ export default function Header() {
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className={styles.nav}>
+                    <nav className={`${styles.nav} ${isScrolled ? styles.visible : styles.hiddenElement}`}>
                         <Link href="/" className={styles.link}>Home</Link>
                         <Link href="/products" className={styles.link}>Products</Link>
                         <Link href="/testimonials" className={styles.link}>Testimonials</Link>
                     </nav>
 
-                    <div className={styles.actions}>
+                    <div className={`${styles.actions} ${isScrolled ? styles.visible : styles.hiddenElement}`}>
                         {user ? (
-                            <Link href="/dashboard" className={styles.actionLink}>
-                                <User size={18} />
-                                <span className={styles.actionText}>{user.fullName.split(' ')[0]}</span>
+                            <Link href="/dashboard" className={styles.iconLink}>
+                                <div className={styles.iconWrapper}>
+                                    <User size={18} strokeWidth={1.5} />
+                                </div>
+                                <span className={styles.iconLabel}>{user.fullName.split(' ')[0]}</span>
                             </Link>
                         ) : (
-                            <Link href="/signin" className={styles.actionLink}>
-                                <span className={styles.actionText}>Sign In</span>
+                            <Link href="/signin" className={styles.iconLink}>
+                                <div className={styles.iconWrapper}>
+                                    <User size={18} strokeWidth={1.5} />
+                                </div>
+                                <span className={styles.iconLabel}>Sign In</span>
                             </Link>
                         )}
-                        <Link href="/cart" className={styles.actionLink}>
-                            <span className={styles.actionText}>My Cart</span>
-                            <ShoppingBag size={18} />
+                        <Link href="/wishlist" className={styles.iconLink}>
+                            <div className={styles.iconWrapper}>
+                                <Heart size={18} strokeWidth={1.5} />
+                                {wishlist.itemCount > 0 && (
+                                    <span className={styles.wishlistBadge}>{wishlist.itemCount}</span>
+                                )}
+                            </div>
+                            <span className={styles.iconLabel}>Wishlist</span>
+                        </Link>
+                        <Link href="/cart" className={styles.iconLink}>
+                            <div className={styles.iconWrapper}>
+                                <ShoppingBag size={18} strokeWidth={1.5} />
+                                {cart.itemCount > 0 && (
+                                    <span className={styles.cartBadge}>{cart.itemCount}</span>
+                                )}
+                            </div>
+                            <span className={styles.iconLabel}>Bag</span>
                         </Link>
                     </div>
                 </div>
@@ -84,6 +107,7 @@ export default function Header() {
                     <Link href="/" className={styles.mobileLink} onClick={toggleMenu}>Home</Link>
                     <Link href="/products" className={styles.mobileLink} onClick={toggleMenu}>Products</Link>
                     <Link href="/testimonials" className={styles.mobileLink} onClick={toggleMenu}>Testimonials</Link>
+                    <Link href="/wishlist" className={styles.mobileLink} onClick={toggleMenu}>Wishlist</Link>
                     {user ? (
                         <Link href="/dashboard" className={styles.mobileLink} onClick={toggleMenu}>My Account</Link>
                     ) : (

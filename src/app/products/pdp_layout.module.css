@@ -208,10 +208,32 @@
     font-weight: 600;
     font-size: 1rem;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .addToCartBtn:hover {
     background-color: #14402a;
+}
+
+.addToCartBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.addToCartBtn.added {
+    background-color: #15803d;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .buyNowBtn {
@@ -230,6 +252,11 @@
     filter: brightness(1.1);
 }
 
+.buyNowBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .wishlistBtn {
     width: 50px;
     height: 50px;
@@ -239,6 +266,25 @@
     align-items: center;
     justify-content: center;
     color: #fff;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wishlistBtn:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.wishlistBtn.inWishlist {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.wishlistBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .metaInfo {

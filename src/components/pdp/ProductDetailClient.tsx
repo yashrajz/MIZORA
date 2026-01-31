@@ -3,9 +3,13 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Product, products } from '@/data/products';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from '../../app/products/pdp_layout.module.css';
-import { Star, Heart, Truck, CreditCard, Headphones, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Star, Heart, Truck, CreditCard, Headphones, Facebook, Twitter, Instagram, Loader2, Check } from 'lucide-react';
 
 interface ProductDetailClientProps {
     product: Product;
@@ -22,9 +26,18 @@ const SIZE_MULTIPLIERS: Record<string, number> = {
 };
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
+    const router = useRouter();
+    const { user } = useAuth();
+    const { addToCart, isLoading: cartLoading } = useCart();
+    const { addToWishlist, removeFromWishlist, isInWishlist, isLoading: wishlistLoading } = useWishlist();
+    
     const [selectedImage, setSelectedImage] = useState(product.images[0]);
     const [activeTab, setActiveTab] = useState<'desc' | 'info' | 'review'>('info');
     const [quantity, setQuantity] = useState(1);
+    const [addingToCart, setAddingToCart] = useState(false);
+    const [addedToCart, setAddedToCart] = useState(false);
+    
+    const inWishlist = isInWishlist(product.id);
     
     // Calculate available sizes based on product type
     const availableSizes = useMemo(() => {
@@ -56,6 +69,50 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             .filter(p => p.id !== product.id && (p.grade === product.grade || p.bestFor.some(bf => product.bestFor.includes(bf))))
             .slice(0, 4);
     }, [product]);
+
+    const handleAddToCart = async () => {
+        if (!user) {
+            router.push('/signin');
+            return;
+        }
+
+        setAddingToCart(true);
+        const success = await addToCart(product.id, quantity);
+        setAddingToCart(false);
+        
+        if (success) {
+            setAddedToCart(true);
+            setTimeout(() => setAddedToCart(false), 2000);
+        }
+    };
+
+    const handleBuyNow = async () => {
+        if (!user) {
+            router.push('/signin');
+            return;
+        }
+
+        setAddingToCart(true);
+        const success = await addToCart(product.id, quantity);
+        setAddingToCart(false);
+        
+        if (success) {
+            router.push('/cart');
+        }
+    };
+
+    const handleWishlistToggle = async () => {
+        if (!user) {
+            router.push('/signin');
+            return;
+        }
+
+        if (inWishlist) {
+            await removeFromWishlist(product.id);
+        } else {
+            await addToWishlist(product.id);
+        }
+    };
 
     return (
         <div className={`container ${styles.container}`}>
@@ -147,9 +204,37 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             <span className={styles.qtyValue}>{quantity}</span>
                             <button className={styles.qtyBtn} onClick={() => setQuantity(q => q + 1)}>+</button>
                         </div>
-                        <button className={styles.addToCartBtn}>Add To Cart</button>
-                        <button className={styles.buyNowBtn}>Buy Now</button>
-                        <button className={styles.wishlistBtn}><Heart size={20} /></button>
+                        <button 
+                            className={`${styles.addToCartBtn} ${addedToCart ? styles.added : ''}`}
+                            onClick={handleAddToCart}
+                            disabled={addingToCart || cartLoading}
+                        >
+                            {addingToCart ? (
+                                <Loader2 size={18} className={styles.spinner} />
+                            ) : addedToCart ? (
+                                <>
+                                    <Check size={18} />
+                                    Added!
+                                </>
+                            ) : (
+                                'Add To Cart'
+                            )}
+                        </button>
+                        <button 
+                            className={styles.buyNowBtn}
+                            onClick={handleBuyNow}
+                            disabled={addingToCart || cartLoading}
+                        >
+                            Buy Now
+                        </button>
+                        <button 
+                            className={`${styles.wishlistBtn} ${inWishlist ? styles.inWishlist : ''}`}
+                            onClick={handleWishlistToggle}
+                            disabled={wishlistLoading}
+                            aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                        >
+                            <Heart size={20} fill={inWishlist ? 'currentColor' : 'none'} />
+                        </button>
                     </div>
 
                     <div className={styles.metaInfo}>
