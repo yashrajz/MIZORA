@@ -20,16 +20,25 @@ import styles from './dashboard.module.css';
 
 interface Order {
     _id: string;
-    orderNumber: string;
     status: string;
-    totalAmount: number;
+    paymentStatus: string;
+    total: number;
     createdAt: string;
     items: Array<{
         productId: string;
         name: string;
         quantity: number;
         price: number;
+        image?: string;
     }>;
+    shippingAddress?: {
+        fullName: string;
+        address: string;
+        city: string;
+        state: string;
+        postalCode: string;
+        country: string;
+    };
 }
 
 export default function DashboardPage() {
@@ -50,7 +59,9 @@ export default function DashboardPage() {
             try {
                 const res = await fetch('/api/orders');
                 const data = await res.json();
-                if (data.success && Array.isArray(data.data)) {
+                if (data.success && data.data?.orders && Array.isArray(data.data.orders)) {
+                    setOrders(data.data.orders);
+                } else if (data.success && Array.isArray(data.data)) {
                     setOrders(data.data);
                 } else {
                     setOrders([]);
@@ -110,9 +121,9 @@ export default function DashboardPage() {
                 <aside className={styles.sidebar}>
                     <div className={styles.profileCard}>
                         <div className={styles.avatar}>
-                            {user.fullName.charAt(0).toUpperCase()}
+                            {user.fullName?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
-                        <h2 className={styles.userName}>{user.fullName}</h2>
+                        <h2 className={styles.userName}>{user.fullName || 'User'}</h2>
                         <p className={styles.userEmail}>{user.email}</p>
                         {user.isEmailVerified ? (
                             <span className={styles.verifiedBadge}>
@@ -162,7 +173,7 @@ export default function DashboardPage() {
                 <div className={styles.content}>
                     {activeTab === 'overview' && (
                         <div className={styles.overview}>
-                            <h1 className={styles.pageTitle}>Welcome back, {user.fullName.split(' ')[0]}!</h1>
+                            <h1 className={styles.pageTitle}>Welcome back, {user.fullName?.split(' ')[0] || 'User'}!</h1>
                             
                             <div className={styles.statsGrid}>
                                 <div className={styles.statCard}>
@@ -238,14 +249,14 @@ export default function DashboardPage() {
                                         {orders.slice(0, 3).map((order) => (
                                             <div key={order._id} className={styles.orderCard}>
                                                 <div className={styles.orderHeader}>
-                                                    <span className={styles.orderNumber}>#{order.orderNumber}</span>
+                                                    <span className={styles.orderNumber}>#{order._id?.slice(-8)?.toUpperCase() || 'N/A'}</span>
                                                     <span className={`${styles.orderStatus} ${getStatusColor(order.status)}`}>
                                                         {order.status}
                                                     </span>
                                                 </div>
                                                 <div className={styles.orderDetails}>
                                                     <span className={styles.orderDate}>{formatDate(order.createdAt)}</span>
-                                                    <span className={styles.orderTotal}>${order.totalAmount.toFixed(2)}</span>
+                                                    <span className={styles.orderTotal}>₹{(order.total || 0).toFixed(2)}</span>
                                                 </div>
                                                 <div className={styles.orderItems}>
                                                     {order.items.slice(0, 2).map((item, idx) => (
@@ -286,21 +297,21 @@ export default function DashboardPage() {
                                     {orders.map((order) => (
                                         <div key={order._id} className={styles.orderCard}>
                                             <div className={styles.orderHeader}>
-                                                <span className={styles.orderNumber}>Order #{order.orderNumber}</span>
+                                                <span className={styles.orderNumber}>Order #{order._id?.slice(-8)?.toUpperCase() || 'N/A'}</span>
                                                 <span className={`${styles.orderStatus} ${getStatusColor(order.status)}`}>
                                                     {order.status}
                                                 </span>
                                             </div>
                                             <div className={styles.orderDetails}>
                                                 <span className={styles.orderDate}>{formatDate(order.createdAt)}</span>
-                                                <span className={styles.orderTotal}>${order.totalAmount.toFixed(2)}</span>
+                                                <span className={styles.orderTotal}>₹{(order.total || 0).toFixed(2)}</span>
                                             </div>
                                             <div className={styles.orderItemsList}>
                                                 {order.items.map((item, idx) => (
                                                     <div key={idx} className={styles.orderItemRow}>
                                                         <span>{item.name}</span>
                                                         <span>× {item.quantity}</span>
-                                                        <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                                        <span>₹{((item.price || 0) * item.quantity).toFixed(2)}</span>
                                                     </div>
                                                 ))}
                                             </div>

@@ -137,7 +137,7 @@ export default function OrdersPage() {
                             <div className={styles.orderHeader}>
                                 <div className={styles.orderInfo}>
                                     <span className={styles.orderId}>
-                                        Order #{order._id.slice(-8).toUpperCase()}
+                                        Order #{order._id?.slice(-8)?.toUpperCase() || 'N/A'}
                                     </span>
                                     <span className={styles.orderDate}>
                                         <Clock size={14} />
@@ -159,7 +159,7 @@ export default function OrdersPage() {
                                             {item.name} × {item.quantity}
                                         </span>
                                         <span className={styles.itemPrice}>
-                                            ${(item.price * item.quantity).toFixed(2)}
+                                            ₹{((item.price || 0) * item.quantity).toFixed(2)}
                                         </span>
                                     </div>
                                 ))}
@@ -174,7 +174,7 @@ export default function OrdersPage() {
                                 <div className={styles.orderTotal}>
                                     <span>Total:</span>
                                     <span className={styles.totalAmount}>
-                                        ${order.total.toFixed(2)}
+                                        ₹{(order.total || 0).toFixed(2)}
                                     </span>
                                 </div>
                                 <Link href={`/orders/${order._id}`} className={styles.viewDetails}>

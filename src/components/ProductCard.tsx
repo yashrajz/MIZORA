@@ -67,12 +67,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className={styles.card}>
             <Link href={`/products/${product.slug}`} className={styles.link}>
                 <div className={styles.imageWrapper}>
-                    <Image
-                        src={product.images[0]}
-                        alt={product.name}
-                        fill
-                        className={styles.image}
-                    />
+                    {product.images?.[0] && (
+                        <Image
+                            src={product.images[0]}
+                            alt={product.name || 'Product'}
+                            fill
+                            className={styles.image}
+                        />
+                    )}
                     <button
                         className={`${styles.wishlistBtn} ${inWishlist ? styles.inWishlist : ''}`}
                         onClick={handleWishlistToggle}
@@ -99,7 +101,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className={styles.content}>
                     <div className={styles.meta}>
                         <span className={styles.grade}>{product.grade}</span>
-                        <span className={styles.price}>${product.price}</span>
+                        <span className={styles.price}>₹{product.price}</span>
                     </div>
                     <h2 className={styles.name}>{product.name}</h2>
                     <p className={styles.subtitle}>{product.subtitle}</p>

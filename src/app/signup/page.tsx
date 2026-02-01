@@ -14,6 +14,8 @@ export default function SignUpPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [localError, setLocalError] = useState('');
+    const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,6 +23,25 @@ export default function SignUpPage() {
 
         if (!fullName || !email || !password || !confirmPassword) {
             setLocalError('Please fill in all fields');
+            return;
+        }
+
+        // Validate name (2-50 chars, letters and spaces only)
+        const trimmedName = fullName.trim();
+        if (trimmedName.length < 2 || trimmedName.length > 50) {
+            setLocalError('Name must be between 2 and 50 characters');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(trimmedName)) {
+            setLocalError('Name can only contain letters and spaces');
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.trim())) {
+            setLocalError('Please enter a valid email address');
             return;
         }
 
@@ -34,9 +55,17 @@ export default function SignUpPage() {
             return;
         }
 
-        const success = await signUp(email, password, fullName);
+        // Check password strength
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+            setLocalError('Password must contain uppercase, lowercase, and number');
+            return;
+        }
+
+        const success = await signUp(email.trim().toLowerCase(), password, trimmedName);
         if (success) {
-            router.push('/dashboard');
+            // Show verification message instead of redirecting
+            setRegisteredEmail(email.trim().toLowerCase());
+            setShowVerificationMessage(true);
         }
     };
 
@@ -44,10 +73,31 @@ export default function SignUpPage() {
         <main className={styles.main}>
             <div className={styles.container}>
                 <div className={styles.formCard}>
-                    <div className={styles.header}>
-                        <h1 className={styles.title}>Create Account</h1>
-                        <p className={styles.subtitle}>Join MIZORA for a premium matcha experience</p>
-                    </div>
+                    {showVerificationMessage ? (
+                        <>
+                            <div className={styles.header}>
+                                <h1 className={styles.title}>Check Your Email</h1>
+                                <p className={styles.subtitle}>We've sent a verification link to {registeredEmail}</p>
+                            </div>
+                            <div style={{ padding: '2rem', textAlign: 'center' }}>
+                                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
+                                <p style={{ marginBottom: '1rem', color: '#6b7280' }}>
+                                    Please click the verification link in your email to activate your account.
+                                </p>
+                                <p style={{ marginBottom: '2rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                                    Can't find it? Check your spam folder.
+                                </p>
+                                <Link href="/signin" className={styles.submitButton} style={{ textDecoration: 'none', display: 'inline-block' }}>
+                                    Go to Sign In
+                                </Link>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={styles.header}>
+                                <h1 className={styles.title}>Create Account</h1>
+                                <p className={styles.subtitle}>Join MIZORA for a premium matcha experience</p>
+                            </div>
 
                     <form onSubmit={handleSubmit} className={styles.form}>
                         {(error || localError) && (
@@ -133,6 +183,8 @@ export default function SignUpPage() {
                             </Link>
                         </p>
                     </div>
+                        </>
+                    )}
                 </div>
             </div>
         </main>

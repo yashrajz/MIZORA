@@ -4,8 +4,11 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useScroll, useTransform, MotionValue } from "framer-motion";
 
 const FRAME_COUNT = 31;
-const IMAGE_NAME_TEMPLATE = (index: number) =>
-    `/matcha_img_seq/ezgif-frame-${index.toString().padStart(3, "0")}.jpg`;
+const IMAGE_NAME_TEMPLATE = (index: number) => {
+    const str = index.toString();
+    const padded = str.length >= 3 ? str : str.padStart(3, "0");
+    return `/matcha_img_seq/ezgif-frame-${padded}.jpg`;
+};
 
 interface MatchaSequenceProps {
     progress?: MotionValue<number>;

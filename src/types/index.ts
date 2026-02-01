@@ -87,6 +87,8 @@ export interface IOrder {
     status: OrderStatus;
     paymentMethod?: string;
     paymentStatus?: 'pending' | 'paid' | 'failed';
+    stripeSessionId?: string;
+    stripePaymentIntentId?: string;
     createdAt: Date;
     updatedAt: Date;
 }

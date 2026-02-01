@@ -105,16 +105,19 @@ export async function POST(request: NextRequest) {
         const body: AddToCartRequest = await request.json();
         const { productId, quantity = 1 } = body;
 
-        if (!productId) {
+        if (!productId || typeof productId !== 'string') {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Product ID is required' },
                 { status: 400 }
             );
         }
 
-        if (quantity < 1) {
+        // Sanitize productId (prevent injection)
+        const sanitizedProductId = productId.trim().slice(0, 100);
+
+        if (quantity < 1 || quantity > 99) {
             return NextResponse.json<ApiResponse>(
-                { success: false, error: 'Quantity must be at least 1' },
+                { success: false, error: 'Quantity must be between 1 and 99' },
                 { status: 400 }
             );
         }
@@ -124,15 +127,15 @@ export async function POST(request: NextRequest) {
         
         // Try MongoDB only if it's a valid ObjectId
         let dbProduct = null;
-        if (isValidObjectId(productId)) {
+        if (isValidObjectId(sanitizedProductId)) {
             try {
-                dbProduct = await Product.findById(productId).lean();
+                dbProduct = await Product.findById(sanitizedProductId).lean();
             } catch (e) {
                 // Invalid ObjectId, fall through to static products
             }
         }
         
-        const staticProduct = staticProducts.find(p => p.id === productId);
+        const staticProduct = staticProducts.find(p => p.id === sanitizedProductId);
         const product = dbProduct || staticProduct;
 
         if (!product) {
@@ -145,12 +148,19 @@ export async function POST(request: NextRequest) {
         // Check if item already in cart
         const existingItem = await CartItem.findOne({
             userId: auth.userId,
-            productId,
+            productId: sanitizedProductId,
         });
 
         if (existingItem) {
-            // Update quantity
-            existingItem.quantity += quantity;
+            // Update quantity with limit check
+            const newQuantity = existingItem.quantity + quantity;
+            if (newQuantity > 99) {
+                return NextResponse.json<ApiResponse>(
+                    { success: false, error: 'Maximum quantity is 99' },
+                    { status: 400 }
+                );
+            }
+            existingItem.quantity = newQuantity;
             await existingItem.save();
 
             return NextResponse.json<ApiResponse>(
@@ -166,7 +176,7 @@ export async function POST(request: NextRequest) {
         // Create new cart item
         const cartItem = await CartItem.create({
             userId: auth.userId,
-            productId,
+            productId: sanitizedProductId,
             quantity,
         });
 
@@ -201,9 +211,18 @@ export async function PUT(request: NextRequest) {
         const body: UpdateCartRequest = await request.json();
         const { productId, quantity } = body;
 
-        if (!productId) {
+        if (!productId || typeof productId !== 'string') {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Product ID is required' },
+                { status: 400 }
+            );
+        }
+
+        const sanitizedProductId = productId.trim().slice(0, 100);
+
+        if (typeof quantity !== 'number' || quantity < 0 || quantity > 99) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Invalid quantity' },
                 { status: 400 }
             );
         }
@@ -212,7 +231,7 @@ export async function PUT(request: NextRequest) {
 
         if (quantity <= 0) {
             // Remove item if quantity is 0 or negative
-            await CartItem.deleteOne({ userId: auth.userId, productId });
+            await CartItem.deleteOne({ userId: auth.userId, productId: sanitizedProductId });
             return NextResponse.json<ApiResponse>(
                 { success: true, message: 'Item removed from cart' },
                 { status: 200 }
@@ -220,7 +239,7 @@ export async function PUT(request: NextRequest) {
         }
 
         const cartItem = await CartItem.findOneAndUpdate(
-            { userId: auth.userId, productId },
+            { userId: auth.userId, productId: sanitizedProductId },
             { quantity },
             { new: true }
         );
@@ -278,7 +297,9 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        const result = await CartItem.deleteOne({ userId: auth.userId, productId });
+        const sanitizedProductId = productId.trim().slice(0, 100);
+
+        const result = await CartItem.deleteOne({ userId: auth.userId, productId: sanitizedProductId });
 
         if (result.deletedCount === 0) {
             return NextResponse.json<ApiResponse>(

@@ -93,9 +93,22 @@ export default function WishlistPage() {
                 <div className={styles.wishlistGrid}>
                     {wishlist.items.map((item) => (
                         <div key={item._id} className={styles.wishlistItem}>
-                            <Link href={`/products/${item.product?.slug}`} className={styles.imageLink}>
+                            {item.product?.slug ? (
+                                <Link href={`/products/${item.product.slug}`} className={styles.imageLink}>
+                                    <div className={styles.imageWrapper}>
+                                        {item.product?.images?.[0] && (
+                                            <Image
+                                                src={item.product.images[0]}
+                                                alt={item.product?.name || 'Product'}
+                                                fill
+                                                className={styles.image}
+                                            />
+                                        )}
+                                    </div>
+                                </Link>
+                            ) : (
                                 <div className={styles.imageWrapper}>
-                                    {item.product?.images[0] && (
+                                    {item.product?.images?.[0] && (
                                         <Image
                                             src={item.product.images[0]}
                                             alt={item.product?.name || 'Product'}
@@ -104,7 +117,7 @@ export default function WishlistPage() {
                                         />
                                     )}
                                 </div>
-                            </Link>
+                            )}
                             <div className={styles.itemContent}>
                                 <span className={styles.grade}>{item.product?.grade}</span>
                                 <Link
@@ -114,7 +127,7 @@ export default function WishlistPage() {
                                     {item.product?.name}
                                 </Link>
                                 <p className={styles.subtitle}>{item.product?.subtitle}</p>
-                                <p className={styles.price}>${item.product?.price.toFixed(2)}</p>
+                                <p className={styles.price}>₹{(item.product?.price || 0).toFixed(2)}</p>
                                 <div className={styles.itemActions}>
                                     <button
                                         className={styles.addToCartBtn}

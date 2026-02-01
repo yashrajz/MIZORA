@@ -17,10 +17,27 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Sanitize and validate email
+        const sanitizedEmail = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 255) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Invalid email or password' },
+                { status: 401 }
+            );
+        }
+
+        if (password.length < 1 || password.length > 128) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Invalid email or password' },
+                { status: 401 }
+            );
+        }
+
         await dbConnect();
 
         // Find user by email
-        const user = await User.findOne({ email: email.toLowerCase() });
+        const user = await User.findOne({ email: sanitizedEmail });
         if (!user) {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Invalid email or password' },
@@ -34,6 +51,18 @@ export async function POST(request: NextRequest) {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Invalid email or password' },
                 { status: 401 }
+            );
+        }
+
+        // Check if email is verified
+        if (!user.isEmailVerified) {
+            return NextResponse.json<ApiResponse>(
+                { 
+                    success: false, 
+                    error: 'Please verify your email before signing in. Check your inbox for the verification link.',
+                    data: { requiresVerification: true, email: user.email }
+                },
+                { status: 403 }
             );
         }
 

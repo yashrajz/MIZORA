@@ -104,6 +104,14 @@ const OrderSchema = new Schema<IOrderDocument>(
             enum: ['pending', 'paid', 'failed'],
             default: 'pending',
         },
+        stripeSessionId: {
+            type: String,
+            default: '',
+        },
+        stripePaymentIntentId: {
+            type: String,
+            default: '',
+        },
     },
     {
         timestamps: true,

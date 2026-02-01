@@ -22,7 +22,14 @@ export default function SignInPage() {
             return;
         }
 
-        const success = await signIn(email, password);
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.trim())) {
+            setLocalError('Please enter a valid email address');
+            return;
+        }
+
+        const success = await signIn(email.trim().toLowerCase(), password);
         if (success) {
             router.push('/dashboard');
         }

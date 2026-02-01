@@ -18,16 +18,42 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (password.length < 8) {
+        // Sanitize and validate inputs
+        const sanitizedEmail = email.trim().toLowerCase();
+        const sanitizedName = fullName.trim();
+
+        if (sanitizedName.length < 2 || sanitizedName.length > 50) {
             return NextResponse.json<ApiResponse>(
-                { success: false, error: 'Password must be at least 8 characters' },
+                { success: false, error: 'Name must be between 2 and 50 characters' },
+                { status: 400 }
+            );
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(sanitizedName)) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Name can only contain letters and spaces' },
+                { status: 400 }
+            );
+        }
+
+        if (password.length < 8 || password.length > 128) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Password must be between 8 and 128 characters' },
+                { status: 400 }
+            );
+        }
+
+        // Check password strength
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+            return NextResponse.json<ApiResponse>(
+                { success: false, error: 'Password must contain uppercase, lowercase, and number' },
                 { status: 400 }
             );
         }
 
         // Email validation
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!emailRegex.test(email)) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(sanitizedEmail) || sanitizedEmail.length > 255) {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Please enter a valid email address' },
                 { status: 400 }
@@ -37,7 +63,7 @@ export async function POST(request: NextRequest) {
         await dbConnect();
 
         // Check if user already exists
-        const existingUser = await User.findOne({ email: email.toLowerCase() });
+        const existingUser = await User.findOne({ email: sanitizedEmail });
         if (existingUser) {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'An account with this email already exists' },
@@ -55,9 +81,9 @@ export async function POST(request: NextRequest) {
         // Hash password and create user
         const passwordHash = await hashPassword(password);
         const user = await User.create({
-            email: email.toLowerCase(),
+            email: sanitizedEmail,
             passwordHash,
-            fullName: fullName.trim(),
+            fullName: sanitizedName,
             isEmailVerified: false,
             emailVerificationToken: verificationToken,
             emailVerificationExpires: verificationExpires,
@@ -78,29 +104,17 @@ export async function POST(request: NextRequest) {
             console.error('Failed to send verification email:', emailResult.error);
         }
 
-        // Generate token and set cookie (user can login but with limited access until verified)
-        const token = generateToken({
-            userId: user._id.toString(),
-            email: user.email,
-        });
-        await setAuthCookie(token);
+        // DO NOT log in user automatically - they must verify email first
+        // Return success without setting auth cookie
 
-        const response: AuthResponse = {
-            user: {
-                _id: user._id.toString(),
-                email: user.email,
-                fullName: user.fullName,
-                avatarUrl: user.avatarUrl,
-                isEmailVerified: user.isEmailVerified,
-                createdAt: user.createdAt,
-            },
-        };
-
-        return NextResponse.json<ApiResponse<AuthResponse>>(
+        return NextResponse.json<ApiResponse>(
             { 
                 success: true, 
-                data: response, 
-                message: 'Account created! Please check your email to verify your account.' 
+                message: 'Account created! Please check your email to verify your account.',
+                data: {
+                    email: user.email,
+                    requiresVerification: true
+                }
             },
             { status: 201 }
         );

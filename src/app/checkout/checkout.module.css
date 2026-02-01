@@ -148,6 +148,154 @@
     background: #f0fdf4;
 }
 
+/* Enhanced Success State */
+.successIconWrapper {
+    margin-bottom: 1.5rem;
+}
+
+.spinnerLarge {
+    color: #4a7c59;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.orderIdBox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f3f4f6;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem auto;
+    max-width: 300px;
+}
+
+.orderIdBox svg {
+    color: #4a7c59;
+}
+
+.orderIdLabel {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.confirmationDetails {
+    background: #f0fdf4;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem auto;
+    max-width: 350px;
+    text-align: left;
+}
+
+.confirmationDetails p {
+    color: #15803d;
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.viewOrdersButton,
+.continueButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Cancel State */
+.cancelState {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.cancelIconWrapper {
+    margin-bottom: 1.5rem;
+}
+
+.cancelIcon {
+    color: #dc2626;
+}
+
+.cancelTitle {
+    font-family: var(--font-playfair-display), serif;
+    font-size: 2rem;
+    color: #1a1a1a;
+    margin: 0 0 1rem 0;
+}
+
+.cancelText {
+    color: #6b7280;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.cancelSubtext {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.cancelInfo {
+    background: #fef2f2;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1.5rem auto;
+    max-width: 400px;
+}
+
+.cancelInfo p {
+    color: #6b7280;
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.cancelActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.retryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #4a7c59;
+    color: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.retryButton:hover {
+    background: #3d6a4a;
+}
+
+.backToCartButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.backToCartButton:hover {
+    border-color: #4a7c59;
+    color: #4a7c59;
+}
+
 /* Checkout Layout */
 .checkoutLayout {
     display: grid;
@@ -252,6 +400,110 @@
 .placeOrderButton:disabled {
     background: #9ca3af;
     cursor: not-allowed;
+}
+
+.placeOrderButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.securityNote {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Payment Section */
+.paymentSection {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.paymentSection .sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stripeInfo {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.stripeCard {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.secureIcon {
+    color: #4a7c59;
+    flex-shrink: 0;
+}
+
+.secureText {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.25rem 0;
+}
+
+.secureSubtext {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.paymentMethods {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.cardIcons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cardBrand {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.freeShippingNote {
+    background: #f0fdf4;
+    color: #15803d;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Order Summary */

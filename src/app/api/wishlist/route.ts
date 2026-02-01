@@ -96,27 +96,29 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { productId } = body;
 
-        if (!productId) {
+        if (!productId || typeof productId !== 'string') {
             return NextResponse.json<ApiResponse>(
                 { success: false, error: 'Product ID is required' },
                 { status: 400 }
             );
         }
 
+        const sanitizedProductId = productId.trim().slice(0, 100);
+
         // Verify product exists (in MongoDB or static data)
         await dbConnect();
         
         // Try MongoDB only if it's a valid ObjectId
         let dbProduct = null;
-        if (isValidObjectId(productId)) {
+        if (isValidObjectId(sanitizedProductId)) {
             try {
-                dbProduct = await Product.findById(productId).lean();
+                dbProduct = await Product.findById(sanitizedProductId).lean();
             } catch (e) {
                 // Invalid ObjectId, fall through to static products
             }
         }
         
-        const staticProduct = staticProducts.find(p => p.id === productId);
+        const staticProduct = staticProducts.find(p => p.id === sanitizedProductId);
         const product = dbProduct || staticProduct;
 
         if (!product) {
@@ -129,7 +131,7 @@ export async function POST(request: NextRequest) {
         // Check if item already in wishlist
         const existingItem = await WishlistItem.findOne({
             userId: auth.userId,
-            productId,
+            productId: sanitizedProductId,
         });
 
         if (existingItem) {
@@ -146,7 +148,7 @@ export async function POST(request: NextRequest) {
         // Create new wishlist item
         const wishlistItem = await WishlistItem.create({
             userId: auth.userId,
-            productId,
+            productId: sanitizedProductId,
         });
 
         return NextResponse.json<ApiResponse>(
@@ -187,11 +189,13 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
+        const sanitizedProductId = productId.trim().slice(0, 100);
+
         await dbConnect();
 
         const result = await WishlistItem.findOneAndDelete({
             userId: auth.userId,
-            productId,
+            productId: sanitizedProductId,
         });
 
         if (!result) {

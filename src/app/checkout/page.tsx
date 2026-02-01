@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CreditCard, Lock, ShieldCheck, Loader2 } from 'lucide-react';
 import styles from './checkout.module.css';
 
 interface ShippingAddress {
@@ -21,12 +21,10 @@ interface ShippingAddress {
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const { cart, clearCart } = useCart();
+    const { cart } = useCart();
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [orderComplete, setOrderComplete] = useState(false);
-    const [orderId, setOrderId] = useState('');
     
     const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
         fullName: user?.fullName || '',
@@ -34,13 +32,15 @@ export default function CheckoutPage() {
         city: '',
         state: '',
         postalCode: '',
-        country: 'United States',
+        country: 'India',
         phone: '',
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setShippingAddress(prev => ({ ...prev, [name]: value }));
+        // Sanitize input by trimming and limiting length
+        const sanitizedValue = value.slice(0, 200).trim();
+        setShippingAddress(prev => ({ ...prev, [name]: sanitizedValue }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -50,30 +50,46 @@ export default function CheckoutPage() {
         // Validate
         const requiredFields = ['fullName', 'address', 'city', 'state', 'postalCode', 'country'];
         for (const field of requiredFields) {
-            if (!shippingAddress[field as keyof ShippingAddress]) {
+            if (!shippingAddress[field as keyof ShippingAddress]?.trim()) {
                 setError(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
                 return;
             }
         }
 
+        // Validate postal code format (basic)
+        if (!/^[A-Za-z0-9\s-]{3,10}$/.test(shippingAddress.postalCode)) {
+            setError('Please enter a valid postal code');
+            return;
+        }
+
+        // Validate phone number if provided
+        if (shippingAddress.phone && !/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(shippingAddress.phone)) {
+            setError('Please enter a valid phone number');
+            return;
+        }
+
         try {
             setIsLoading(true);
-            const res = await fetch('/api/orders', {
+            
+            // Create Stripe checkout session
+            const res = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     shippingAddress,
-                    paymentMethod: 'card',
                 }),
             });
             const data = await res.json();
 
             if (data.success) {
-                setOrderComplete(true);
-                setOrderId(data.data._id);
-                await clearCart();
+                // Redirect to Stripe Checkout using the session URL
+                if (data.data.sessionUrl) {
+                    window.location.href = data.data.sessionUrl;
+                } else {
+                    setError('Failed to get checkout URL');
+                }
             } else {
-                setError(data.error || 'Failed to place order');
+                setError(data.error || 'Failed to create checkout session');
             }
         } catch (err) {
             setError('Failed to connect to server');
@@ -98,7 +114,7 @@ export default function CheckoutPage() {
         );
     }
 
-    if (cart.items.length === 0 && !orderComplete) {
+    if (cart.items.length === 0) {
         return (
             <main className={styles.main}>
                 <div className={styles.container}>
@@ -114,35 +130,7 @@ export default function CheckoutPage() {
         );
     }
 
-    if (orderComplete) {
-        return (
-            <main className={styles.main}>
-                <div className={styles.container}>
-                    <div className={styles.successState}>
-                        <CheckCircle size={64} className={styles.successIcon} />
-                        <h1 className={styles.successTitle}>Order Placed Successfully!</h1>
-                        <p className={styles.successText}>
-                            Thank you for your order. Your order ID is:
-                        </p>
-                        <p className={styles.orderId}>{orderId}</p>
-                        <p className={styles.successText}>
-                            We&apos;ll send you an email confirmation shortly.
-                        </p>
-                        <div className={styles.successActions}>
-                            <Link href="/orders" className={styles.viewOrdersButton}>
-                                View Orders
-                            </Link>
-                            <Link href="/products" className={styles.continueButton}>
-                                Continue Shopping
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        );
-    }
-
-    const shipping = cart.subtotal >= 50 ? 0 : 5;
+    const shipping = cart.subtotal >= 3000 ? 0 : 299;
     const total = cart.subtotal + shipping;
 
     return (
@@ -243,12 +231,43 @@ export default function CheckoutPage() {
                                     onChange={handleInputChange}
                                     disabled={isLoading}
                                 >
+                                    <option value="India">India</option>
                                     <option value="United States">United States</option>
                                     <option value="Canada">Canada</option>
                                     <option value="United Kingdom">United Kingdom</option>
                                     <option value="Australia">Australia</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="France">France</option>
                                     <option value="Japan">Japan</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        {/* Payment Info Section */}
+                        <div className={styles.paymentSection}>
+                            <h2 className={styles.sectionTitle}>
+                                <CreditCard size={20} />
+                                Payment
+                            </h2>
+                            <div className={styles.stripeInfo}>
+                                <div className={styles.stripeCard}>
+                                    <ShieldCheck size={24} className={styles.secureIcon} />
+                                    <div>
+                                        <p className={styles.secureText}>Secure Payment via Stripe</p>
+                                        <p className={styles.secureSubtext}>
+                                            Your payment information is encrypted and secure. You&apos;ll be redirected to Stripe to complete your purchase.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className={styles.paymentMethods}>
+                                    <span>Accepted:</span>
+                                    <div className={styles.cardIcons}>
+                                        <span className={styles.cardBrand}>Visa</span>
+                                        <span className={styles.cardBrand}>Mastercard</span>
+                                        <span className={styles.cardBrand}>Amex</span>
+                                        <span className={styles.cardBrand}>Discover</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -257,8 +276,23 @@ export default function CheckoutPage() {
                             className={styles.placeOrderButton}
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Placing Order...' : `Place Order • $${total.toFixed(2)}`}
+                            {isLoading ? (
+                                <>
+                                    <Loader2 size={20} className={styles.spinner} />
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    <Lock size={18} />
+                                    Pay ₹{total.toFixed(2)}
+                                </>
+                            )}
                         </button>
+                        
+                        <p className={styles.securityNote}>
+                            <Lock size={14} />
+                            256-bit SSL encrypted checkout
+                        </p>
                     </form>
 
                     <div className={styles.orderSummary}>
@@ -280,7 +314,7 @@ export default function CheckoutPage() {
                                     <div className={styles.itemInfo}>
                                         <span className={styles.itemName}>{item.product?.name}</span>
                                         <span className={styles.itemPrice}>
-                                            ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                                            ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
@@ -289,16 +323,21 @@ export default function CheckoutPage() {
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryRow}>
                             <span>Subtotal</span>
-                            <span>${cart.subtotal.toFixed(2)}</span>
+                            <span>₹{cart.subtotal.toFixed(2)}</span>
                         </div>
                         <div className={styles.summaryRow}>
                             <span>Shipping</span>
-                            <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                            <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
                         </div>
+                        {shipping === 0 && (
+                            <div className={styles.freeShippingNote}>
+                                🎉 You qualify for free shipping!
+                            </div>
+                        )}
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryTotal}>
                             <span>Total</span>
-                            <span>${total.toFixed(2)}</span>
+                            <span>₹{total.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>

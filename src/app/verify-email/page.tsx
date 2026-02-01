@@ -30,11 +30,11 @@ function VerifyEmailContent() {
                 if (data.success) {
                     setStatus('success');
                     setMessage(data.message || 'Email verified successfully!');
-                    // Refresh user state to update isEmailVerified
+                    // Refresh user state to update isEmailVerified and log them in
                     await refreshUser();
-                    // Redirect to homepage after 2 seconds
+                    // Redirect to dashboard after 2 seconds
                     setTimeout(() => {
-                        router.push('/');
+                        router.push('/dashboard');
                     }, 2000);
                 } else {
                     setStatus('error');
@@ -66,9 +66,9 @@ function VerifyEmailContent() {
                             <CheckCircle size={64} className={styles.successIcon} />
                             <h1 className={styles.title}>Email Verified!</h1>
                             <p className={styles.text}>{message}</p>
-                            <p className={styles.redirectText}>Redirecting to homepage...</p>
-                            <Link href="/" className={styles.primaryButton}>
-                                Go to Homepage
+                            <p className={styles.redirectText}>Logging you in and redirecting to your dashboard...</p>
+                            <Link href="/dashboard" className={styles.primaryButton}>
+                                Go to Dashboard
                             </Link>
                         </>
                     )}

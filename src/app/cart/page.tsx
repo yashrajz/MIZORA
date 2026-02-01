@@ -72,7 +72,7 @@ export default function CartPage() {
                         {cart.items.map((item) => (
                             <div key={item._id} className={styles.cartItem}>
                                 <div className={styles.itemImage}>
-                                    {item.product?.images[0] && (
+                                    {item.product?.images?.[0] && (
                                         <Image
                                             src={item.product.images[0]}
                                             alt={item.product?.name || 'Product'}
@@ -83,34 +83,38 @@ export default function CartPage() {
                                     )}
                                 </div>
                                 <div className={styles.itemDetails}>
-                                    <Link
-                                        href={`/products/${item.product?.slug}`}
-                                        className={styles.itemName}
-                                    >
-                                        {item.product?.name}
-                                    </Link>
+                                    {item.product?.slug ? (
+                                        <Link
+                                            href={`/products/${item.product.slug}`}
+                                            className={styles.itemName}
+                                        >
+                                            {item.product?.name || 'Unknown Product'}
+                                        </Link>
+                                    ) : (
+                                        <span className={styles.itemName}>{item.product?.name || 'Unknown Product'}</span>
+                                    )}
                                     <p className={styles.itemPrice}>
-                                        ${item.product?.price.toFixed(2)}
+                                        ₹{(item.product?.price || 0).toFixed(2)}
                                     </p>
                                 </div>
                                 <div className={styles.itemActions}>
                                     <div className={styles.quantityControl}>
                                         <button
                                             onClick={() =>
-                                                updateQuantity(item.productId, item.quantity - 1)
+                                                updateQuantity(item.productId, Math.max(1, item.quantity - 1))
                                             }
                                             className={styles.quantityButton}
-                                            disabled={isLoading}
+                                            disabled={isLoading || item.quantity <= 1}
                                         >
                                             <Minus size={16} />
                                         </button>
                                         <span className={styles.quantity}>{item.quantity}</span>
                                         <button
                                             onClick={() =>
-                                                updateQuantity(item.productId, item.quantity + 1)
+                                                updateQuantity(item.productId, Math.min(99, item.quantity + 1))
                                             }
                                             className={styles.quantityButton}
-                                            disabled={isLoading}
+                                            disabled={isLoading || item.quantity >= 99}
                                         >
                                             <Plus size={16} />
                                         </button>
@@ -124,7 +128,7 @@ export default function CartPage() {
                                     </button>
                                 </div>
                                 <div className={styles.itemTotal}>
-                                    ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                                    ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
                                 </div>
                             </div>
                         ))}
@@ -134,17 +138,17 @@ export default function CartPage() {
                         <h2 className={styles.summaryTitle}>Order Summary</h2>
                         <div className={styles.summaryRow}>
                             <span>Subtotal ({cart.itemCount} items)</span>
-                            <span>${cart.subtotal.toFixed(2)}</span>
+                            <span>₹{cart.subtotal.toFixed(2)}</span>
                         </div>
                         <div className={styles.summaryRow}>
                             <span>Shipping</span>
-                            <span>{cart.subtotal >= 50 ? 'Free' : '$5.00'}</span>
+                            <span>{cart.subtotal >= 3000 ? 'Free' : '₹299'}</span>
                         </div>
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryTotal}>
                             <span>Total</span>
                             <span>
-                                ${(cart.subtotal + (cart.subtotal >= 50 ? 0 : 5)).toFixed(2)}
+                                ₹{(cart.subtotal + (cart.subtotal >= 3000 ? 0 : 299)).toFixed(2)}
                             </span>
                         </div>
                         <Link href="/checkout" className={styles.checkoutButton}>

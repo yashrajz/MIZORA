@@ -90,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const data = await res.json();
 
             if (data.success) {
-                setUser(data.data.user);
+                // Don't set user - they need to verify email first
                 return true;
             } else {
                 setError(data.error || 'Failed to create account');

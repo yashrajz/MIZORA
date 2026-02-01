@@ -134,7 +134,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                         />
                     </div>
                     <div className={styles.thumbnails}>
-                        {product.images.map((img, i) => (
+                        {product.images?.map((img, i) => (
                             <div
                                 key={i}
                                 className={`${styles.thumb} ${selectedImage === img ? styles.active : ''}`}
@@ -142,7 +142,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             >
                                 <Image
                                     src={img}
-                                    alt={`View ${i}`}
+                                    alt={`View ${i + 1}`}
                                     fill
                                     style={{ objectFit: 'cover' }}
                                 />
@@ -155,28 +155,28 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 {/* Right: Info */}
                 <div className={styles.infoSection}>
                     <div className={styles.categoryTag}>Matcha Tea</div>
-                    <h1 className={styles.productTitle}>{product.name}</h1>
+                    <h1 className={styles.productTitle}>{product.name || 'Product'}</h1>
 
                     <div className={styles.ratingRow}>
                         <div style={{ display: 'flex', color: '#FFD700' }}>
-                            {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(product.rating) ? "#FFD700" : "none"} />)}
+                            {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(product.rating || 0) ? "#FFD700" : "none"} />)}
                         </div>
-                        <span>{product.rating} ({product.reviews} Reviews)</span>
+                        <span>{product.rating || 0} ({product.reviews || 0} Reviews)</span>
                         <span style={{ color: '#0f0', background: '#0f02', padding: '2px 6px', borderRadius: '4px', fontSize: '0.7rem' }}>In Stock</span>
                     </div>
 
                     <div className={styles.priceRow}>
-                        <span className={styles.currentPrice}>${currentPrice.toFixed(2)}</span>
-                        <span className={styles.originalPrice}>${(currentPrice * 1.2).toFixed(2)}</span>
+                        <span className={styles.currentPrice}>₹{currentPrice.toFixed(2)}</span>
+                        <span className={styles.originalPrice}>₹{(currentPrice * 1.2).toFixed(2)}</span>
                         {quantity > 1 && (
                             <span style={{ marginLeft: '1rem', color: '#C5A669', fontSize: '0.9rem' }}>
-                                Total: ${totalPrice.toFixed(2)}
+                                Total: ₹{totalPrice.toFixed(2)}
                             </span>
                         )}
                     </div>
 
                     <p className={styles.description}>
-                        {product.description}
+                        {product.description || 'No description available.'}
                     </p>
 
                     {/* Size Selector */}
@@ -200,9 +200,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     {/* Actions */}
                     <div className={styles.actionRow}>
                         <div className={styles.qtyWrapper}>
-                            <button className={styles.qtyBtn} onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
+                            <button className={styles.qtyBtn} onClick={() => setQuantity(q => Math.max(1, q - 1))} disabled={quantity <= 1}>-</button>
                             <span className={styles.qtyValue}>{quantity}</span>
-                            <button className={styles.qtyBtn} onClick={() => setQuantity(q => q + 1)}>+</button>
+                            <button className={styles.qtyBtn} onClick={() => setQuantity(q => Math.min(99, q + 1))} disabled={quantity >= 99}>+</button>
                         </div>
                         <button 
                             className={`${styles.addToCartBtn} ${addedToCart ? styles.added : ''}`}
@@ -238,7 +238,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     </div>
 
                     <div className={styles.metaInfo}>
-                        <div><span className={styles.metaLabel}>SKU:</span> MIZ-{product.id.padStart(4, '0')}</div>
+                        <div><span className={styles.metaLabel}>SKU:</span> MIZ-{product.id.length >= 4 ? product.id : product.id.padStart(4, '0')}</div>
                         <div><span className={styles.metaLabel}>Category:</span> {product.grade}, Tea</div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <span className={styles.metaLabel}>Share:</span>
@@ -335,9 +335,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                         <span style={{ fontSize: '0.75rem', color: '#666' }}>({relatedProduct.reviews})</span>
                                     </div>
                                     <div style={{ color: '#C5A669', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                                        ${relatedProduct.price.toFixed(2)}
+                                        ₹{relatedProduct.price.toFixed(2)}
                                         <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.85em', fontWeight: 'normal', marginLeft: '0.5rem' }}>
-                                            ${(relatedProduct.price * 1.2).toFixed(2)}
+                                            ₹{(relatedProduct.price * 1.2).toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
@@ -354,7 +354,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     <Truck className={styles.featureIcon} />
                     <div className={styles.featureText}>
                         <h4>Free Shipping</h4>
-                        <p>Free shipping for orders above $50</p>
+                        <p>Free shipping for orders above ₹3000</p>
                     </div>
                 </div>
                 <div className={styles.featureItem}>

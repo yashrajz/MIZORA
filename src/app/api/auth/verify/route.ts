@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/lib/models';
 import { sendWelcomeEmail } from '@/lib/email';
+import { generateToken, setAuthCookie } from '@/lib/auth';
 import { ApiResponse } from '@/types';
 
 export async function GET(request: NextRequest) {
@@ -57,6 +58,13 @@ export async function GET(request: NextRequest) {
         user.emailVerificationToken = undefined;
         user.emailVerificationExpires = undefined;
         await user.save();
+
+        // Log the user in by setting auth cookie
+        const authToken = generateToken({
+            userId: user._id.toString(),
+            email: user.email,
+        });
+        await setAuthCookie(authToken);
 
         // Send welcome email
         await sendWelcomeEmail(user.email, user.fullName);

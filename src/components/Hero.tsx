@@ -23,8 +23,8 @@ export default function Hero() {
                         <div className={styles.subHeadline}>
                             最高のお茶
                         </div>
-                        <Link href="#shop" className={styles.cta}>
-                            Add To Cart
+                        <Link href="/products" className={styles.cta}>
+                            Shop Now
                         </Link>
                     </div>
 

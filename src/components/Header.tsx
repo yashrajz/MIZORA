@@ -64,7 +64,7 @@ export default function Header() {
                                 <div className={styles.iconWrapper}>
                                     <User size={18} strokeWidth={1.5} />
                                 </div>
-                                <span className={styles.iconLabel}>{user.fullName.split(' ')[0]}</span>
+                                <span className={styles.iconLabel}>{user.fullName?.split(' ')[0] || 'User'}</span>
                             </Link>
                         ) : (
                             <Link href="/signin" className={styles.iconLink}>
