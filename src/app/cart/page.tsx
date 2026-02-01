@@ -8,6 +8,29 @@ import { useAuth } from '@/context/AuthContext';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import styles from './cart.module.css';
 
+// Size pricing multipliers
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+    'Kit Box': 1,
+};
+
+// Helper to calculate actual price based on size
+function calculateItemPrice(basePrice: number, baseWeight: string, selectedSize?: string): number {
+    if (!selectedSize || selectedSize === baseWeight) {
+        return basePrice;
+    }
+    
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const selectedSizeMultiplier = SIZE_MULTIPLIERS[selectedSize] || 1;
+    
+    return (basePrice / baseSizeMultiplier) * selectedSizeMultiplier;
+}
+
 export default function CartPage() {
     const { cart, isLoading, error, updateQuantity, removeFromCart } = useCart();
     const { user } = useAuth();
@@ -69,7 +92,15 @@ export default function CartPage() {
 
                 <div className={styles.cartLayout}>
                     <div className={styles.cartItems}>
-                        {cart.items.map((item) => (
+                        {cart.items.map((item) => {
+                            const actualPrice = calculateItemPrice(
+                                item.product?.price || 0,
+                                item.product?.weight || '30g',
+                                item.selectedSize
+                            );
+                            const itemTotal = actualPrice * item.quantity;
+                            
+                            return (
                             <div key={item._id} className={styles.cartItem}>
                                 <div className={styles.itemImage}>
                                     {item.product?.images?.[0] && (
@@ -93,8 +124,11 @@ export default function CartPage() {
                                     ) : (
                                         <span className={styles.itemName}>{item.product?.name || 'Unknown Product'}</span>
                                     )}
+                                    {item.selectedSize && (
+                                        <p className={styles.itemSize}>Size: {item.selectedSize}</p>
+                                    )}
                                     <p className={styles.itemPrice}>
-                                        ₹{(item.product?.price || 0).toFixed(2)}
+                                        ₹{actualPrice.toFixed(2)}
                                     </p>
                                 </div>
                                 <div className={styles.itemActions}>
@@ -128,10 +162,10 @@ export default function CartPage() {
                                     </button>
                                 </div>
                                 <div className={styles.itemTotal}>
-                                    ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
+                                    ₹{itemTotal.toFixed(2)}
                                 </div>
                             </div>
-                        ))}
+                        )})}
                     </div>
 
                     <div className={styles.cartSummary}>
@@ -142,13 +176,13 @@ export default function CartPage() {
                         </div>
                         <div className={styles.summaryRow}>
                             <span>Shipping</span>
-                            <span>{cart.subtotal >= 3000 ? 'Free' : '₹299'}</span>
+                            <span>{cart.subtotal >= 499 ? 'Free' : '₹50'}</span>
                         </div>
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryTotal}>
                             <span>Total</span>
                             <span>
-                                ₹{(cart.subtotal + (cart.subtotal >= 3000 ? 0 : 299)).toFixed(2)}
+                                ₹{(cart.subtotal + (cart.subtotal >= 499 ? 0 : 50)).toFixed(2)}
                             </span>
                         </div>
                         <Link href="/checkout" className={styles.checkoutButton}>

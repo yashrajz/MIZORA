@@ -127,20 +127,7 @@ export default function WishlistPage() {
                                     {item.product?.name}
                                 </Link>
                                 <p className={styles.subtitle}>{item.product?.subtitle}</p>
-                                <p className={styles.price}>₹{(item.product?.price || 0).toFixed(2)}</p>
                                 <div className={styles.itemActions}>
-                                    <button
-                                        className={styles.addToCartBtn}
-                                        onClick={() => handleAddToCart(item.productId)}
-                                        disabled={addingToCart === item.productId}
-                                    >
-                                        {addingToCart === item.productId ? (
-                                            <Loader2 size={16} className={styles.spinner} />
-                                        ) : (
-                                            <ShoppingCart size={16} />
-                                        )}
-                                        Add to Cart
-                                    </button>
                                     <button
                                         className={styles.removeBtn}
                                         onClick={() => handleRemove(item.productId)}

@@ -77,7 +77,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         }
 
         setAddingToCart(true);
-        const success = await addToCart(product.id, quantity);
+        const success = await addToCart(product.id, quantity, selectedSize);
         setAddingToCart(false);
         
         if (success) {
@@ -93,7 +93,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         }
 
         setAddingToCart(true);
-        const success = await addToCart(product.id, quantity);
+        const success = await addToCart(product.id, quantity, selectedSize);
         setAddingToCart(false);
         
         if (success) {
@@ -354,7 +354,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     <Truck className={styles.featureIcon} />
                     <div className={styles.featureText}>
                         <h4>Free Shipping</h4>
-                        <p>Free shipping for orders above ₹3000</p>
+                        <p>Free shipping for orders above ₹499</p>
                     </div>
                 </div>
                 <div className={styles.featureItem}>

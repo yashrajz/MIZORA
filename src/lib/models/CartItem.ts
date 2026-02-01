@@ -21,14 +21,18 @@ const CartItemSchema = new Schema<ICartItemDocument>(
             min: [1, 'Quantity must be at least 1'],
             default: 1,
         },
+        selectedSize: {
+            type: String,
+            required: false,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-// Compound index for unique user-product combination
-CartItemSchema.index({ userId: 1, productId: 1 }, { unique: true });
+// Compound index for unique user-product-size combination
+CartItemSchema.index({ userId: 1, productId: 1, selectedSize: 1 }, { unique: true });
 
 const CartItem: Model<ICartItemDocument> =
     mongoose.models.CartItem || mongoose.model<ICartItemDocument>('CartItem', CartItemSchema);

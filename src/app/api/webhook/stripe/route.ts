@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import dbConnect from '@/lib/mongodb';
-import { Order, CartItem } from '@/lib/models';
+import { Order, CartItem, User } from '@/lib/models';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 import Stripe from 'stripe';
 
 // Disable body parsing for webhook - use runtime config
@@ -56,6 +57,24 @@ export async function POST(request: NextRequest) {
                         const userId = session.metadata?.userId;
                         if (userId) {
                             await CartItem.deleteMany({ userId });
+                            
+                            // Send order confirmation email
+                            try {
+                                const user = await User.findById(userId);
+                                if (user) {
+                                    await sendOrderConfirmationEmail(
+                                        user.email,
+                                        user.fullName,
+                                        order._id.toString(),
+                                        order.total,
+                                        order.items
+                                    );
+                                    console.log(`Order confirmation email sent to ${user.email}`);
+                                }
+                            } catch (emailError) {
+                                console.error('Failed to send order confirmation email:', emailError);
+                                // Don't fail the webhook if email fails
+                            }
                         }
 
                         console.log(`Order ${orderId} payment completed`);

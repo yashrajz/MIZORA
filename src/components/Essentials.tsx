@@ -23,7 +23,7 @@ export default function Essentials() {
                                 <h3 className={styles.cardTitle}>Matcha Latte Mix</h3>
                                 <p className={styles.cardDesc}>Pre-sweetened with monk fruit for a healthy treat.</p>
                             </div>
-                            <span className={styles.priceBadge}>$28</span>
+                            <span className={styles.priceBadge}>₹699</span>
                         </div>
                     </Link>
 
@@ -41,7 +41,7 @@ export default function Essentials() {
                                 <h3 className={styles.cardTitle}>Matcha Cake Powder</h3>
                                 <p className={styles.cardDesc}>Culinary grade specifically for baking and desserts.</p>
                             </div>
-                            <span className={styles.priceBadge}>$22</span>
+                            <span className={styles.priceBadge}>₹599</span>
                         </div>
                     </Link>
                 </div>

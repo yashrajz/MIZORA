@@ -12,6 +12,29 @@ function isValidObjectId(id: string): boolean {
     return mongoose.Types.ObjectId.isValid(id) && (new mongoose.Types.ObjectId(id)).toString() === id;
 }
 
+// Size pricing multipliers
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+    'Kit Box': 1,
+};
+
+// Helper to calculate actual price based on size
+function calculateItemPrice(basePrice: number, baseWeight: string, selectedSize?: string): number {
+    if (!selectedSize || selectedSize === baseWeight) {
+        return basePrice;
+    }
+    
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const selectedSizeMultiplier = SIZE_MULTIPLIERS[selectedSize] || 1;
+    
+    return (basePrice / baseSizeMultiplier) * selectedSizeMultiplier;
+}
+
 // Helper to convert country name to ISO code
 function getCountryCode(country: string): string {
     const countryMap: Record<string, string> = {
@@ -156,12 +179,13 @@ export async function POST(request: NextRequest) {
 
             if (!product) continue;
 
-            const price = product.price;
-            const name = product.name;
+            const basePrice = product.price;
+            const actualPrice = calculateItemPrice(basePrice, product.weight, item.selectedSize);
+            const name = product.name + (item.selectedSize ? ` (${item.selectedSize})` : '');
             const image = product.images[0] || '';
             const description = (product as any).subtitle || (product as any).description || '';
 
-            subtotal += price * item.quantity;
+            subtotal += actualPrice * item.quantity;
 
             // Stripe line item
             lineItems.push({
@@ -170,9 +194,9 @@ export async function POST(request: NextRequest) {
                     product_data: {
                         name,
                         description: description.substring(0, 500),
-                        images: image ? [`${process.env.NEXT_PUBLIC_SITE_URL}${image}`] : [],
+                        images: image ? [`${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL}${image}`] : [],
                     },
-                    unit_amount: Math.round(price * 100), // Stripe uses paise (100 paise = 1 INR)
+                    unit_amount: Math.round(actualPrice * 100), // Stripe uses paise (100 paise = 1 INR)
                 },
                 quantity: item.quantity,
             });
@@ -181,15 +205,15 @@ export async function POST(request: NextRequest) {
             orderItems.push({
                 productId: item.productId,
                 name,
-                price,
+                price: actualPrice,
                 quantity: item.quantity,
                 image,
             });
         }
 
         // Calculate shipping cost (handled via Stripe shipping_options)
-        // Free shipping for orders ₹3000+, otherwise ₹299
-        const shippingCost = subtotal >= 3000 ? 0 : 299;
+        // Free shipping for orders ₹499+, otherwise ₹50
+        const shippingCost = subtotal >= 499 ? 0 : 50;
         const total = subtotal + shippingCost;
 
         // Create order in database (pending payment)
@@ -204,12 +228,13 @@ export async function POST(request: NextRequest) {
         });
 
         // Create Stripe checkout session
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
             line_items: lineItems,
-            success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order._id}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/cancel?order_id=${order._id}`,
+            success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order._id}`,
+            cancel_url: `${baseUrl}/checkout/cancel?order_id=${order._id}`,
             customer_email: auth.email,
             metadata: {
                 orderId: order._id.toString(),

@@ -7,6 +7,7 @@ interface CartProduct {
     name: string;
     slug: string;
     price: number;
+    weight: string;
     images: string[];
     stock: number;
 }
@@ -15,6 +16,7 @@ interface CartItem {
     _id: string;
     productId: string;
     quantity: number;
+    selectedSize?: string;
     product: CartProduct | null;
 }
 
@@ -28,7 +30,7 @@ interface CartContextType {
     cart: CartData;
     isLoading: boolean;
     error: string | null;
-    addToCart: (productId: string, quantity?: number) => Promise<boolean>;
+    addToCart: (productId: string, quantity?: number, selectedSize?: string) => Promise<boolean>;
     updateQuantity: (productId: string, quantity: number) => Promise<boolean>;
     removeFromCart: (productId: string) => Promise<boolean>;
     clearCart: () => Promise<boolean>;
@@ -76,14 +78,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         refreshCart();
     }, [refreshCart]);
 
-    const addToCart = async (productId: string, quantity = 1): Promise<boolean> => {
+    const addToCart = async (productId: string, quantity = 1, selectedSize?: string): Promise<boolean> => {
         try {
             setIsLoading(true);
             setError(null);
             const res = await fetch('/api/cart', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity }),
+                body: JSON.stringify({ productId, quantity, selectedSize }),
             });
             const data = await res.json();
 

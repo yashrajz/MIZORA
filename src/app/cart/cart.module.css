@@ -159,6 +159,12 @@
     color: #4a7c59;
 }
 
+.itemSize {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0 0;
+}
+
 .itemPrice {
     color: #6b7280;
     margin: 0;

@@ -11,6 +11,29 @@ function isValidObjectId(id: string): boolean {
     return mongoose.Types.ObjectId.isValid(id) && (new mongoose.Types.ObjectId(id)).toString() === id;
 }
 
+// Size pricing multipliers
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+    'Kit Box': 1,
+};
+
+// Helper to calculate actual price based on size
+function calculateItemPrice(basePrice: number, baseWeight: string, selectedSize?: string): number {
+    if (!selectedSize || selectedSize === baseWeight) {
+        return basePrice;
+    }
+    
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const selectedSizeMultiplier = SIZE_MULTIPLIERS[selectedSize] || 1;
+    
+    return (basePrice / baseSizeMultiplier) * selectedSizeMultiplier;
+}
+
 // GET - Get user's cart items
 export async function GET() {
     try {
@@ -47,6 +70,7 @@ export async function GET() {
                     _id: item._id.toString(),
                     productId: item.productId,
                     quantity: item.quantity,
+                    selectedSize: item.selectedSize,
                     createdAt: item.createdAt,
                     updatedAt: item.updatedAt,
                     product: product ? {
@@ -54,6 +78,7 @@ export async function GET() {
                         name: product.name,
                         slug: product.slug,
                         price: product.price,
+                        weight: product.weight,
                         images: product.images,
                         stock: dbProduct?.stock || 100,
                     } : null,
@@ -64,11 +89,15 @@ export async function GET() {
         // Filter out items with missing products
         const validItems = populatedItems.filter(item => item.product !== null);
 
-        // Calculate totals
-        const subtotal = validItems.reduce(
-            (sum, item) => sum + (item.product?.price || 0) * item.quantity,
-            0
-        );
+        // Calculate totals with correct pricing based on selected size
+        const subtotal = validItems.reduce((sum, item) => {
+            const actualPrice = calculateItemPrice(
+                item.product?.price || 0,
+                item.product?.weight || '30g',
+                item.selectedSize
+            );
+            return sum + actualPrice * item.quantity;
+        }, 0);
         const itemCount = validItems.reduce((sum, item) => sum + item.quantity, 0);
 
         return NextResponse.json<ApiResponse>(
@@ -103,7 +132,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body: AddToCartRequest = await request.json();
-        const { productId, quantity = 1 } = body;
+        const { productId, quantity = 1, selectedSize } = body;
 
         if (!productId || typeof productId !== 'string') {
             return NextResponse.json<ApiResponse>(
@@ -145,10 +174,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if item already in cart
+        // Check if item already in cart with same size
         const existingItem = await CartItem.findOne({
             userId: auth.userId,
             productId: sanitizedProductId,
+            selectedSize: selectedSize || undefined,
         });
 
         if (existingItem) {
@@ -178,6 +208,7 @@ export async function POST(request: NextRequest) {
             userId: auth.userId,
             productId: sanitizedProductId,
             quantity,
+            selectedSize: selectedSize || undefined,
         });
 
         return NextResponse.json<ApiResponse>(

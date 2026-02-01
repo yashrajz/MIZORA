@@ -49,6 +49,7 @@ export interface ICartItem {
     userId: string;
     productId: string;
     quantity: number;
+    selectedSize?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -121,8 +122,7 @@ export interface AuthResponse {
 // Cart Request Types
 export interface AddToCartRequest {
     productId: string;
-    quantity: number;
-}
+    quantity: number;    selectedSize?: string;}
 
 export interface UpdateCartRequest {
     productId: string;

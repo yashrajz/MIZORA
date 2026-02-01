@@ -19,6 +19,29 @@ interface ShippingAddress {
     phone: string;
 }
 
+// Size pricing multipliers
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+    'Kit Box': 1,
+};
+
+// Helper to calculate actual price based on size
+function calculateItemPrice(basePrice: number, baseWeight: string, selectedSize?: string): number {
+    if (!selectedSize || selectedSize === baseWeight) {
+        return basePrice;
+    }
+    
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const selectedSizeMultiplier = SIZE_MULTIPLIERS[selectedSize] || 1;
+    
+    return (basePrice / baseSizeMultiplier) * selectedSizeMultiplier;
+}
+
 export default function CheckoutPage() {
     const router = useRouter();
     const { cart } = useCart();
@@ -38,9 +61,35 @@ export default function CheckoutPage() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        // Sanitize input by trimming and limiting length
-        const sanitizedValue = value.slice(0, 200).trim();
+        // Sanitize input by limiting length only (allow spaces during typing)
+        const sanitizedValue = value.slice(0, 200);
         setShippingAddress(prev => ({ ...prev, [name]: sanitizedValue }));
+        
+        // Auto-fetch city and state for Indian postal codes
+        const trimmedValue = value.trim();
+        if (name === 'postalCode' && shippingAddress.country === 'India' && /^\d{6}$/.test(trimmedValue)) {
+            fetchIndianPostalCodeData(trimmedValue);
+        }
+    };
+
+    const fetchIndianPostalCodeData = async (postalCode: string) => {
+        try {
+            // Using India Post API
+            const res = await fetch(`https://api.postalpincode.in/pincode/${postalCode}`);
+            const data = await res.json();
+            
+            if (data && data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+                const postOffice = data[0].PostOffice[0];
+                setShippingAddress(prev => ({
+                    ...prev,
+                    city: postOffice.District || prev.city,
+                    state: postOffice.State || prev.state,
+                }));
+            }
+        } catch (err) {
+            // Silently fail - user can still enter manually
+            console.error('Failed to fetch postal code data:', err);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -130,7 +179,7 @@ export default function CheckoutPage() {
         );
     }
 
-    const shipping = cart.subtotal >= 3000 ? 0 : 299;
+    const shipping = cart.subtotal >= 499 ? 0 : 50;
     const total = cart.subtotal + shipping;
 
     return (
@@ -298,7 +347,15 @@ export default function CheckoutPage() {
                     <div className={styles.orderSummary}>
                         <h2 className={styles.sectionTitle}>Order Summary</h2>
                         <div className={styles.orderItems}>
-                            {cart.items.map((item) => (
+                            {cart.items.map((item) => {
+                                const actualPrice = calculateItemPrice(
+                                    item.product?.price || 0,
+                                    item.product?.weight || '30g',
+                                    item.selectedSize
+                                );
+                                const itemTotal = actualPrice * item.quantity;
+                                
+                                return (
                                 <div key={item._id} className={styles.orderItem}>
                                     <div className={styles.itemImage}>
                                         {item.product?.images[0] && (
@@ -312,13 +369,16 @@ export default function CheckoutPage() {
                                         <span className={styles.itemQuantity}>{item.quantity}</span>
                                     </div>
                                     <div className={styles.itemInfo}>
-                                        <span className={styles.itemName}>{item.product?.name}</span>
+                                        <span className={styles.itemName}>
+                                            {item.product?.name}
+                                            {item.selectedSize && ` (${item.selectedSize})`}
+                                        </span>
                                         <span className={styles.itemPrice}>
-                                            ₹{((item.product?.price || 0) * item.quantity).toFixed(2)}
+                                            ₹{itemTotal.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryRow}>

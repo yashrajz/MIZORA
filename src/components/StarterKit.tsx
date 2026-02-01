@@ -24,7 +24,7 @@ export default function StarterKit() {
 
                     <div className={styles.priceBlock}>
                         <span className={styles.priceLabel}>Get it for</span>
-                        <span className={styles.price}>$25</span>
+                        <span className={styles.price}>₹699</span>
                     </div>
 
                     <div className={styles.features}>

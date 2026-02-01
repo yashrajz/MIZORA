@@ -18,7 +18,7 @@ export default function ProductCollection() {
                                         <div className={styles.label}>Starting Grade</div>
                                         <h3 className={styles.productTitle}>Culinary Grade</h3>
                                     </div>
-                                    <span className={styles.price}>$18</span>
+                                    <span className={styles.price}>₹499</span>
                                 </div>
                                 <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
                                     <Image
@@ -37,7 +37,7 @@ export default function ProductCollection() {
                                         <div className={styles.label}>Standard Daily</div>
                                         <h3 className={styles.productTitle}>Premium Latte Blend</h3>
                                     </div>
-                                    <span className={styles.price}>$24</span>
+                                    <span className={styles.price}>₹699</span>
                                 </div>
                                 <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
                                     <Image
@@ -57,7 +57,7 @@ export default function ProductCollection() {
                             <div className={styles.label}>Best Seller</div>
                             <h3 className={styles.featuredTitle}>Ceremonial Grade Matcha</h3>
                             <p className={styles.featuredDesc}>The highest quality matcha, vibrant green and sweet.</p>
-                            <div className={styles.featuredPrice}>$32 <span style={{ fontSize: '0.8rem', fontWeight: 400 }}>/ 30gr</span></div>
+                            <div className={styles.featuredPrice}>₹999 <span style={{ fontSize: '0.8rem', fontWeight: 400 }}>/ 30gr</span></div>
                         </div>
                         <div className={styles.featuredImage} style={{ position: 'relative', overflow: 'hidden' }}>
                             <Image
@@ -83,7 +83,7 @@ export default function ProductCollection() {
                             />
                         </div>
                         <h4 className={styles.accTitle}>Bamboo Whisk</h4>
-                        <span className={styles.accPrice}>$15</span>
+                        <span className={styles.accPrice}>₹399</span>
                     </Link>
                     <Link href="/products/matcha-bowl" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
@@ -95,7 +95,7 @@ export default function ProductCollection() {
                             />
                         </div>
                         <h4 className={styles.accTitle}>Matcha Bowl</h4>
-                        <span className={styles.accPrice}>$35</span>
+                        <span className={styles.accPrice}>₹899</span>
                     </Link>
                     <Link href="/products/tea-pot" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
@@ -107,7 +107,7 @@ export default function ProductCollection() {
                             />
                         </div>
                         <h4 className={styles.accTitle}>Tea Pot</h4>
-                        <span className={styles.accPrice}>$40</span>
+                        <span className={styles.accPrice}>₹1099</span>
                     </Link>
                 </div>
 

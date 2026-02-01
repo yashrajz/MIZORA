@@ -22,7 +22,7 @@ export const products: Product[] = [
         slug: 'ceremonial-grade-matcha',
         name: 'Ceremonial Grade Matcha',
         subtitle: 'Premium • Uji Origin • 最高の品質',
-        price: 2999,
+        price: 999,
         description: 'Our flagship Ceremonial Grade Matcha is stone-ground from the youngest tea leaves in Uji, Japan. Known for its vibrant emerald green color and sweet, creamy umami flavor without bitterness. Perfect for traditional tea ceremonies or a luxurious daily ritual.',
         images: [
             '/images/ceremonial_tin_new.jpg',
@@ -48,7 +48,7 @@ export const products: Product[] = [
         slug: 'premium-latte-blend',
         name: 'Premium Latte Blend',
         subtitle: 'Daily Ritual • Smooth • カフェラテ',
-        price: 1999,
+        price: 699,
         description: 'A perfect balance of bold matcha flavor and vibrant color. This Premium Latte Blend is robust enough to stand up to your favorite milk or sweetener while retaining a smooth, non-bitter finish. Your daily energy boost, elevated.',
         images: [
             '/images/latte_pouch_new.png',
@@ -74,7 +74,7 @@ export const products: Product[] = [
         slug: 'iced-matcha-starter-kit',
         name: 'Iced Matcha Starter Kit',
         subtitle: 'All-in-One • Essentials • 初心者セット',
-        price: 4999,
+        price: 1699,
         description: 'Everything you need to start your matcha journey. Includes our Premium Latte Blend (30g), a hand-crafted bamboo whisk (chasen), a stoneware whisk holder, and a signature double-walled glass. The perfect gift for yourself or a friend.',
         images: [
             '/images/kit_flatlay_new.jpg',
@@ -100,7 +100,7 @@ export const products: Product[] = [
         slug: 'culinary-grade-matcha',
         name: 'Culinary Grade Matcha',
         subtitle: 'Baking • Cooking • 料理用',
-        price: 1499,
+        price: 499,
         description: 'A versatile, robust matcha designed for culinary creativity. Its bold flavor ensures the matcha taste shines through in cookies, cakes, smoothies, and ice cream. High quality enough to drink, affordable enough to bake with.',
         images: [
             '/images/culinary_pouch_main.jpg',
@@ -126,7 +126,7 @@ export const products: Product[] = [
         slug: 'bamboo-whisk',
         name: 'Bamboo Whisk (Chasen)',
         subtitle: 'Handcrafted • Traditional • 茶筅',
-        price: 1199,
+        price: 399,
         description: 'A 100-prong bamboo whisk essential for whisking matcha into a perfect frothy suspension. Hand-carved from a single piece of bamboo.',
         images: [
             '/images/acc_whisk_main.png',
@@ -148,7 +148,7 @@ export const products: Product[] = [
         slug: 'matcha-bowl',
         name: 'Matcha Bowl (Chawan)',
         subtitle: 'Ceramic • Wide-bottom • 茶碗',
-        price: 2799,
+        price: 899,
         description: 'A traditional ceramic bowl with a wide bottom, designed specifically to allow the bamboo whisk to move freely for optimal frothing.',
         images: [
             '/images/acc_bowl_zen.jpg',
@@ -170,7 +170,7 @@ export const products: Product[] = [
         slug: 'tea-pot',
         name: 'Kyusu Tea Pot',
         subtitle: 'Stoneware • Brewing • 急須',
-        price: 3299,
+        price: 1099,
         description: 'A beautifully crafted Kyusu tea pot, perfect for brewing loose leaf green tea or pouring prepared lattes.',
         images: [
             '/images/acc_teapot_main.png',
@@ -192,7 +192,7 @@ export const products: Product[] = [
         slug: 'ceramic-whisk-holder',
         name: 'Ceramic Whisk Holder (Kusenaoshi)',
         subtitle: 'Shape Protection • Porcelain • 抹茶立て',
-        price: 999,
+        price: 299,
         description: 'Essential for maintaining the shape of your bamboo whisk (chasen). This porcelain holder ensures your whisk dries properly and prevents the prongs from losing their curve.',
         images: [
             '/images/3rd.jpeg',
@@ -213,7 +213,7 @@ export const products: Product[] = [
         slug: 'stainless-steel-sifter',
         name: 'Matcha Sifter (Furui)',
         subtitle: 'Fine Mesh • Stainless Steel • 篩',
-        price: 1099,
+        price: 349,
         description: 'A dedicated fine-mesh sifter to remove clumps from your matcha powder before whisking, ensuring a perfectly smooth and foam-rich tea every time.',
         images: [
             '/images/sifft_texture_new.jpg',
@@ -233,7 +233,7 @@ export const products: Product[] = [
         slug: 'hojicha-powder',
         name: 'Roasted Green Tea (Hojicha)',
         subtitle: 'Roasted • Low Caffeine • ほうじ茶',
-        price: 1799,
+        price: 599,
         description: 'Finely ground roasted green tea powder. Hojicha has a nutty, caramel-like flavor with hints of cocoa. Lower in caffeine, making it a perfect evening latte option.',
         images: ['/images/culinary_powder_texture.jpg', '/images/latte_pouch_new.png'], // Placeholder: using texture, need brown image ideally
         grade: 'Premium',
@@ -250,7 +250,7 @@ export const products: Product[] = [
         slug: 'matcha-latte-mix',
         name: 'Matcha Latte Mix',
         subtitle: 'Sweetened • Monk Fruit • ラテ素',
-        price: 2299,
+        price: 749,
         description: 'Ready-to-mix organic matcha blend pre-sweetened with monk fruit. Create a perfect matcha latte in seconds—just add milk (dairy or plant-based). Zero added sugar, 100% delicious.',
         images: [
             '/images/essential_latte.png',
@@ -271,7 +271,7 @@ export const products: Product[] = [
         slug: 'matcha-cake-powder',
         name: 'Matcha Cake Powder',
         subtitle: 'Baking • Vibrant Color • 製菓用',
-        price: 1799,
+        price: 599,
         description: 'Specialized culinary grade matcha processed to retain its vibrant green color even after baking at high temperatures. Perfect for cakes, cookies, and pastries.',
         images: [
             '/images/essential_cake.png',
