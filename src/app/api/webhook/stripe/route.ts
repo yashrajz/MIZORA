@@ -4,12 +4,9 @@ import dbConnect from '@/lib/mongodb';
 import { Order, CartItem } from '@/lib/models';
 import Stripe from 'stripe';
 
-// Disable body parsing for webhook
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+// Disable body parsing for webhook - use runtime config
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
     try {
