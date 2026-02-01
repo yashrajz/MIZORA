@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'MIZORA <noreply@mizora.com>';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 /**
  * Generate a random verification token
