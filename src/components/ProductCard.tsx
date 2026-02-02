@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,28 @@ interface ProductCardProps {
     product: Product;
 }
 
+// Size pricing multipliers (same as in ProductDetailClient)
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+};
+
+// Calculate minimum price (30g equivalent) for a product
+const getMinPrice = (basePrice: number, baseWeight: string, grade: string): number => {
+    // Accessories don't have size variants, return base price
+    if (grade === 'Accessory' || baseWeight === 'N/A' || baseWeight === 'Kit Box') {
+        return basePrice;
+    }
+
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const minSizeMultiplier = SIZE_MULTIPLIERS['30g'];
+    return (basePrice / baseSizeMultiplier) * minSizeMultiplier;
+};
+
 export default function ProductCard({ product }: ProductCardProps) {
     const router = useRouter();
     const { user } = useAuth();
@@ -25,6 +47,11 @@ export default function ProductCard({ product }: ProductCardProps) {
     const [wishlistLoading, setWishlistLoading] = useState(false);
 
     const inWishlist = isInWishlist(product.id);
+
+    // Calculate display price
+    const displayPrice = useMemo(() => {
+        return getMinPrice(product.price, product.weight, product.grade);
+    }, [product.price, product.weight, product.grade]);
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -101,7 +128,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className={styles.content}>
                     <div className={styles.meta}>
                         <span className={styles.grade}>{product.grade}</span>
-                        <span className={styles.price}>₹{product.price}</span>
+                        <span className={styles.price}>₹{displayPrice.toFixed(0)}</span>
                     </div>
                     <h2 className={styles.name}>{product.name}</h2>
                     <p className={styles.subtitle}>{product.subtitle}</p>

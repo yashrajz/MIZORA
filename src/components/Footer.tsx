@@ -12,7 +12,7 @@ export default function Footer() {
                         <p style={{ marginBottom: '2rem', color: '#ccc' }}>
                             Join our subscription plan and never run out of your daily calm.
                         </p>
-                        <Link href="/shop" className={styles.ctaBtn}>
+                        <Link href="/products" className={styles.ctaBtn}>
                             Shop Now
                         </Link>
                     </div>
@@ -29,12 +29,12 @@ export default function Footer() {
                 </div>
 
                 <div className={styles.footerNav}>
-                    <div>+62 123 4567 890 • mizora@gmail.com</div>
+                    <div>+91 123 4567 890 • mizora@gmail.com</div>
                     <div className={styles.links}>
                         <Link href="/privacy" className={styles.link}>Privacy Policy</Link>
                         <Link href="/terms" className={styles.link}>Terms & Conditions</Link>
                     </div>
-                    <div>© 2024 MIZORA</div>
+                    <div>© {new Date().getFullYear()} MIZORA</div>
                 </div>
             </div>
         </footer>

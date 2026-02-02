@@ -1,8 +1,34 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { products } from '@/data/products';
 import styles from './ProductCollection.module.css';
 
+// Size pricing multipliers (same as in ProductDetailClient)
+const SIZE_MULTIPLIERS: Record<string, number> = {
+    '30g': 1,
+    '100g': 2.5,
+    '200g': 4.5,
+    '250g': 5.5,
+    '500g': 8.5,
+    'N/A': 1,
+};
+
+// Calculate minimum price (30g equivalent) for a product
+const getMinPrice = (basePrice: number, baseWeight: string): number => {
+    const baseSizeMultiplier = SIZE_MULTIPLIERS[baseWeight] || 1;
+    const minSizeMultiplier = SIZE_MULTIPLIERS['30g'];
+    return (basePrice / baseSizeMultiplier) * minSizeMultiplier;
+};
+
 export default function ProductCollection() {
+    // Get products by slug
+    const culinaryProduct = products.find(p => p.slug === 'culinary-grade-matcha');
+    const latteProduct = products.find(p => p.slug === 'premium-latte-blend');
+    const ceremonialProduct = products.find(p => p.slug === 'ceremonial-grade-matcha');
+    const whiskProduct = products.find(p => p.slug === 'bamboo-whisk');
+    const bowlProduct = products.find(p => p.slug === 'matcha-bowl');
+    const teapotProduct = products.find(p => p.slug === 'tea-pot');
+
     return (
         <section className={styles.section} id="products">
             <div className={`container`}>
@@ -11,104 +37,122 @@ export default function ProductCollection() {
                 <div className={styles.mainGrid}>
                     {/* Left Stack */}
                     <div className={styles.leftStack}>
-                        <Link href="/products/culinary-grade-matcha" className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <div>
-                                <div className={styles.cardHeader}>
-                                    <div>
-                                        <div className={styles.label}>Starting Grade</div>
-                                        <h3 className={styles.productTitle}>Culinary Grade</h3>
+                        {culinaryProduct && (
+                            <Link href={`/products/${culinaryProduct.slug}`} className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <div>
+                                    <div className={styles.cardHeader}>
+                                        <div>
+                                            <div className={styles.label}>Starting Grade</div>
+                                            <h3 className={styles.productTitle}>{culinaryProduct.name}</h3>
+                                        </div>
+                                        <span className={styles.price}>
+                                            ₹{getMinPrice(culinaryProduct.price, culinaryProduct.weight).toFixed(0)}
+                                        </span>
                                     </div>
-                                    <span className={styles.price}>₹499</span>
-                                </div>
-                                <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
-                                    <Image
-                                        src="/images/culinary_pouch_main.jpg"
-                                        alt="Culinary Grade Powder"
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                    />
-                                </div>
-                            </div>
-                        </Link>
-                        <Link href="/products/premium-latte-blend" className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <div>
-                                <div className={styles.cardHeader}>
-                                    <div>
-                                        <div className={styles.label}>Standard Daily</div>
-                                        <h3 className={styles.productTitle}>Premium Latte Blend</h3>
+                                    <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                        <Image
+                                            src={culinaryProduct.images[0]}
+                                            alt={culinaryProduct.name}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                        />
                                     </div>
-                                    <span className={styles.price}>₹699</span>
                                 </div>
-                                <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
-                                    <Image
-                                        src="/images/latte_pouch_new.png"
-                                        alt="Premium Latte Blend"
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                    />
+                            </Link>
+                        )}
+                        {latteProduct && (
+                            <Link href={`/products/${latteProduct.slug}`} className={styles.productCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <div>
+                                    <div className={styles.cardHeader}>
+                                        <div>
+                                            <div className={styles.label}>Standard Daily</div>
+                                            <h3 className={styles.productTitle}>{latteProduct.name}</h3>
+                                        </div>
+                                        <span className={styles.price}>
+                                            ₹{getMinPrice(latteProduct.price, latteProduct.weight).toFixed(0)}
+                                        </span>
+                                    </div>
+                                    <div className={styles.smallImage} style={{ position: 'relative', overflow: 'hidden', background: 'none' }}>
+                                        <Image
+                                            src={latteProduct.images[0]}
+                                            alt={latteProduct.name}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        )}
                     </div>
 
                     {/* Right Featured */}
-                    <Link href="/products/ceremonial-grade-matcha" className={styles.featuredCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className={styles.featuredContent}>
-                            <div className={styles.label}>Best Seller</div>
-                            <h3 className={styles.featuredTitle}>Ceremonial Grade Matcha</h3>
-                            <p className={styles.featuredDesc}>The highest quality matcha, vibrant green and sweet.</p>
-                            <div className={styles.featuredPrice}>₹999 <span style={{ fontSize: '0.8rem', fontWeight: 400 }}>/ 30gr</span></div>
-                        </div>
-                        <div className={styles.featuredImage} style={{ position: 'relative', overflow: 'hidden' }}>
-                            <Image
-                                src="/images/ceremonial_tin_new.jpg"
-                                alt="Ceremonial Grade Matcha"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </div>
-                    </Link>
+                    {ceremonialProduct && (
+                        <Link href={`/products/${ceremonialProduct.slug}`} className={styles.featuredCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className={styles.featuredContent}>
+                                <div className={styles.label}>Best Seller</div>
+                                <h3 className={styles.featuredTitle}>{ceremonialProduct.name}</h3>
+                                <p className={styles.featuredDesc}>{ceremonialProduct.subtitle}</p>
+                                <div className={styles.featuredPrice}>
+                                    ₹{getMinPrice(ceremonialProduct.price, ceremonialProduct.weight).toFixed(0)}
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 400 }}> / 30g</span>
+                                </div>
+                            </div>
+                            <div className={styles.featuredImage} style={{ position: 'relative', overflow: 'hidden' }}>
+                                <Image
+                                    src={ceremonialProduct.images[0]}
+                                    alt={ceremonialProduct.name}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Bottom Accessories */}
-                {/* Bottom Accessories */}
                 <div className={styles.bottomRow}>
-                    <Link href="/products/bamboo-whisk" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
-                            <Image
-                                src="/images/product_whisk.png"
-                                alt="Bamboo Whisk"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </div>
-                        <h4 className={styles.accTitle}>Bamboo Whisk</h4>
-                        <span className={styles.accPrice}>₹399</span>
-                    </Link>
-                    <Link href="/products/matcha-bowl" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
-                            <Image
-                                src="/images/acc_bowl_zen.jpg"
-                                alt="Matcha Bowl"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </div>
-                        <h4 className={styles.accTitle}>Matcha Bowl</h4>
-                        <span className={styles.accPrice}>₹899</span>
-                    </Link>
-                    <Link href="/products/tea-pot" className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
-                            <Image
-                                src="/images/product_teapot.png"
-                                alt="Tea Pot"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </div>
-                        <h4 className={styles.accTitle}>Tea Pot</h4>
-                        <span className={styles.accPrice}>₹1099</span>
-                    </Link>
+                    {whiskProduct && (
+                        <Link href={`/products/${whiskProduct.slug}`} className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
+                                <Image
+                                    src={whiskProduct.images[0]}
+                                    alt={whiskProduct.name}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                            <h4 className={styles.accTitle}>{whiskProduct.name}</h4>
+                            <span className={styles.accPrice}>₹{whiskProduct.price.toFixed(0)}</span>
+                        </Link>
+                    )}
+                    {bowlProduct && (
+                        <Link href={`/products/${bowlProduct.slug}`} className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
+                                <Image
+                                    src={bowlProduct.images[0]}
+                                    alt={bowlProduct.name}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                            <h4 className={styles.accTitle}>{bowlProduct.name}</h4>
+                            <span className={styles.accPrice}>₹{bowlProduct.price.toFixed(0)}</span>
+                        </Link>
+                    )}
+                    {teapotProduct && (
+                        <Link href={`/products/${teapotProduct.slug}`} className={styles.accessoryCard} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className={styles.accImage} style={{ position: 'relative', overflow: 'hidden' }}>
+                                <Image
+                                    src={teapotProduct.images[0]}
+                                    alt={teapotProduct.name}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
+                            <h4 className={styles.accTitle}>{teapotProduct.name}</h4>
+                            <span className={styles.accPrice}>₹{teapotProduct.price.toFixed(0)}</span>
+                        </Link>
+                    )}
                 </div>
 
                 <div className={styles.ctaContainer}>

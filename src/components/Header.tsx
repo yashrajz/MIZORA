@@ -43,8 +43,9 @@ export default function Header() {
         <>
             <header className={`${styles.header} ${isScrolled ? styles.scrolled : styles.hidden}`}>
                 <div className={`container ${styles.navContainer}`}>
-                    <button className={`${styles.mobileToggle} ${isScrolled ? styles.visible : styles.hiddenElement}`} onClick={toggleMenu} aria-label="Toggle menu">
-                        <Menu size={24} color={isScrolled ? "white" : "white"} />
+                    {/* Mobile Menu Toggle - Always visible on mobile */}
+                    <button className={styles.mobileToggle} onClick={toggleMenu} aria-label="Toggle menu">
+                        <Menu size={24} color="white" />
                     </button>
 
                     <Link href="/" className={styles.logo}>
@@ -58,6 +59,7 @@ export default function Header() {
                         <Link href="/testimonials" className={styles.link}>Testimonials</Link>
                     </nav>
 
+                    {/* Desktop Actions */}
                     <div className={`${styles.actions} ${isScrolled ? styles.visible : styles.hiddenElement}`}>
                         {user ? (
                             <Link href="/dashboard" className={styles.iconLink}>
@@ -91,6 +93,18 @@ export default function Header() {
                                 )}
                             </div>
                             <span className={styles.iconLabel}>Bag</span>
+                        </Link>
+                    </div>
+
+                    {/* Mobile Actions - Always visible on mobile */}
+                    <div className={styles.mobileActions}>
+                        <Link href="/cart" className={styles.mobileIconLink}>
+                            <div className={styles.iconWrapper}>
+                                <ShoppingBag size={20} strokeWidth={1.5} />
+                                {cart.itemCount > 0 && (
+                                    <span className={styles.cartBadge}>{cart.itemCount}</span>
+                                )}
+                            </div>
                         </Link>
                     </div>
                 </div>

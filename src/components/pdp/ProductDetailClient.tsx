@@ -30,15 +30,15 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const { user } = useAuth();
     const { addToCart, isLoading: cartLoading } = useCart();
     const { addToWishlist, removeFromWishlist, isInWishlist, isLoading: wishlistLoading } = useWishlist();
-    
+
     const [selectedImage, setSelectedImage] = useState(product.images[0]);
     const [activeTab, setActiveTab] = useState<'desc' | 'info' | 'review'>('info');
     const [quantity, setQuantity] = useState(1);
     const [addingToCart, setAddingToCart] = useState(false);
     const [addedToCart, setAddedToCart] = useState(false);
-    
+
     const inWishlist = isInWishlist(product.id);
-    
+
     // Calculate available sizes based on product type
     const availableSizes = useMemo(() => {
         if (product.grade === 'Accessory') {
@@ -79,7 +79,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         setAddingToCart(true);
         const success = await addToCart(product.id, quantity, selectedSize);
         setAddingToCart(false);
-        
+
         if (success) {
             setAddedToCart(true);
             setTimeout(() => setAddedToCart(false), 2000);
@@ -95,7 +95,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         setAddingToCart(true);
         const success = await addToCart(product.id, quantity, selectedSize);
         setAddingToCart(false);
-        
+
         if (success) {
             router.push('/cart');
         }
@@ -112,6 +112,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         } else {
             await addToWishlist(product.id);
         }
+    };
+
+    // Navigation functions for image gallery
+    const handlePrevImage = () => {
+        const currentIndex = product.images.indexOf(selectedImage);
+        const prevIndex = currentIndex === 0 ? product.images.length - 1 : currentIndex - 1;
+        setSelectedImage(product.images[prevIndex]);
+    };
+
+    const handleNextImage = () => {
+        const currentIndex = product.images.indexOf(selectedImage);
+        const nextIndex = currentIndex === product.images.length - 1 ? 0 : currentIndex + 1;
+        setSelectedImage(product.images[nextIndex]);
     };
 
     return (
@@ -132,6 +145,29 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             style={{ objectFit: 'contain', padding: '2rem' }}
                             priority
                         />
+                        {/* Navigation Arrows */}
+                        {product.images.length > 1 && (
+                            <>
+                                <button
+                                    className={`${styles.navArrow} ${styles.navArrowLeft}`}
+                                    onClick={handlePrevImage}
+                                    aria-label="Previous image"
+                                >
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                </button>
+                                <button
+                                    className={`${styles.navArrow} ${styles.navArrowRight}`}
+                                    onClick={handleNextImage}
+                                    aria-label="Next image"
+                                >
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </>
+                        )}
                     </div>
                     <div className={styles.thumbnails}>
                         {product.images?.map((img, i) => (
@@ -204,7 +240,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             <span className={styles.qtyValue}>{quantity}</span>
                             <button className={styles.qtyBtn} onClick={() => setQuantity(q => Math.min(99, q + 1))} disabled={quantity >= 99}>+</button>
                         </div>
-                        <button 
+                        <button
                             className={`${styles.addToCartBtn} ${addedToCart ? styles.added : ''}`}
                             onClick={handleAddToCart}
                             disabled={addingToCart || cartLoading}
@@ -220,14 +256,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                 'Add To Cart'
                             )}
                         </button>
-                        <button 
+                        <button
                             className={styles.buyNowBtn}
                             onClick={handleBuyNow}
                             disabled={addingToCart || cartLoading}
                         >
                             Buy Now
                         </button>
-                        <button 
+                        <button
                             className={`${styles.wishlistBtn} ${inWishlist ? styles.inWishlist : ''}`}
                             onClick={handleWishlistToggle}
                             disabled={wishlistLoading}
@@ -299,53 +335,53 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     <h3 className={styles.sectionTitle}>Explore Related Products</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
                         {relatedProducts.map((relatedProduct) => (
-                        <Link 
-                            key={relatedProduct.id} 
-                            href={`/products/${relatedProduct.slug}`}
-                            style={{ textDecoration: 'none', color: 'inherit' }}
-                        >
-                            <div style={{ background: '#fff', borderRadius: '12px', overflow: 'hidden', paddingBottom: '1rem', cursor: 'pointer', transition: 'transform 0.2s' }}>
-                                <div style={{ background: '#f5f5f5', height: '250px', position: 'relative' }}>
-                                    <Image
-                                        src={relatedProduct.images[0]}
-                                        alt={relatedProduct.name}
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                    />
-                                    {relatedProduct.rating >= 4.8 && (
-                                        <span style={{ position: 'absolute', top: '10px', left: '10px', background: '#C5A669', color: '#fff', fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
-                                            Top Rated
-                                        </span>
-                                    )}
-                                </div>
-                                <div style={{ padding: '1rem' }}>
-                                    <div style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{relatedProduct.grade}</div>
-                                    <h4 style={{ color: '#0B1A12', margin: '0.5rem 0', fontSize: '1rem', fontWeight: '600' }}>{relatedProduct.name}</h4>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                        <div style={{ display: 'flex', color: '#FFD700' }}>
-                                            {[1, 2, 3, 4, 5].map(s => (
-                                                <Star 
-                                                    key={s} 
-                                                    size={12} 
-                                                    fill={s <= Math.round(relatedProduct.rating) ? "#FFD700" : "none"}
-                                                    color="#FFD700"
-                                                />
-                                            ))}
+                            <Link
+                                key={relatedProduct.id}
+                                href={`/products/${relatedProduct.slug}`}
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                            >
+                                <div style={{ background: '#fff', borderRadius: '12px', overflow: 'hidden', paddingBottom: '1rem', cursor: 'pointer', transition: 'transform 0.2s' }}>
+                                    <div style={{ background: '#f5f5f5', height: '250px', position: 'relative' }}>
+                                        <Image
+                                            src={relatedProduct.images[0]}
+                                            alt={relatedProduct.name}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                        {relatedProduct.rating >= 4.8 && (
+                                            <span style={{ position: 'absolute', top: '10px', left: '10px', background: '#C5A669', color: '#fff', fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
+                                                Top Rated
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div style={{ padding: '1rem' }}>
+                                        <div style={{ fontSize: '0.75rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{relatedProduct.grade}</div>
+                                        <h4 style={{ color: '#0B1A12', margin: '0.5rem 0', fontSize: '1rem', fontWeight: '600' }}>{relatedProduct.name}</h4>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                            <div style={{ display: 'flex', color: '#FFD700' }}>
+                                                {[1, 2, 3, 4, 5].map(s => (
+                                                    <Star
+                                                        key={s}
+                                                        size={12}
+                                                        fill={s <= Math.round(relatedProduct.rating) ? "#FFD700" : "none"}
+                                                        color="#FFD700"
+                                                    />
+                                                ))}
+                                            </div>
+                                            <span style={{ fontSize: '0.75rem', color: '#666' }}>({relatedProduct.reviews})</span>
                                         </div>
-                                        <span style={{ fontSize: '0.75rem', color: '#666' }}>({relatedProduct.reviews})</span>
-                                    </div>
-                                    <div style={{ color: '#C5A669', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                                        ₹{relatedProduct.price.toFixed(2)}
-                                        <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.85em', fontWeight: 'normal', marginLeft: '0.5rem' }}>
-                                            ₹{(relatedProduct.price * 1.2).toFixed(2)}
-                                        </span>
+                                        <div style={{ color: '#C5A669', fontWeight: 'bold', fontSize: '1.1rem' }}>
+                                            ₹{relatedProduct.price.toFixed(2)}
+                                            <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.85em', fontWeight: 'normal', marginLeft: '0.5rem' }}>
+                                                ₹{(relatedProduct.price * 1.2).toFixed(2)}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
-            </div>
             )}
 
             {/* Footer Features */}

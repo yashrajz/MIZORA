@@ -22,7 +22,7 @@ export const products: Product[] = [
         slug: 'ceremonial-grade-matcha',
         name: 'Ceremonial Grade Matcha',
         subtitle: 'Premium • Uji Origin • 最高の品質',
-        price: 999,
+        price: 499,
         description: 'Our flagship Ceremonial Grade Matcha is stone-ground from the youngest tea leaves in Uji, Japan. Known for its vibrant emerald green color and sweet, creamy umami flavor without bitterness. Perfect for traditional tea ceremonies or a luxurious daily ritual.',
         images: [
             '/images/ceremonial_tin_new.jpg',
@@ -74,7 +74,7 @@ export const products: Product[] = [
         slug: 'iced-matcha-starter-kit',
         name: 'Iced Matcha Starter Kit',
         subtitle: 'All-in-One • Essentials • 初心者セット',
-        price: 1699,
+        price: 699,
         description: 'Everything you need to start your matcha journey. Includes our Premium Latte Blend (30g), a hand-crafted bamboo whisk (chasen), a stoneware whisk holder, and a signature double-walled glass. The perfect gift for yourself or a friend.',
         images: [
             '/images/kit_flatlay_new.jpg',
@@ -126,7 +126,7 @@ export const products: Product[] = [
         slug: 'bamboo-whisk',
         name: 'Bamboo Whisk (Chasen)',
         subtitle: 'Handcrafted • Traditional • 茶筅',
-        price: 399,
+        price: 199,
         description: 'A 100-prong bamboo whisk essential for whisking matcha into a perfect frothy suspension. Hand-carved from a single piece of bamboo.',
         images: [
             '/images/acc_whisk_main.png',
@@ -148,7 +148,7 @@ export const products: Product[] = [
         slug: 'matcha-bowl',
         name: 'Matcha Bowl (Chawan)',
         subtitle: 'Ceramic • Wide-bottom • 茶碗',
-        price: 899,
+        price: 499,
         description: 'A traditional ceramic bowl with a wide bottom, designed specifically to allow the bamboo whisk to move freely for optimal frothing.',
         images: [
             '/images/acc_bowl_zen.jpg',
@@ -170,7 +170,7 @@ export const products: Product[] = [
         slug: 'tea-pot',
         name: 'Kyusu Tea Pot',
         subtitle: 'Stoneware • Brewing • 急須',
-        price: 1099,
+        price: 599,
         description: 'A beautifully crafted Kyusu tea pot, perfect for brewing loose leaf green tea or pouring prepared lattes.',
         images: [
             '/images/acc_teapot_main.png',
@@ -213,7 +213,7 @@ export const products: Product[] = [
         slug: 'stainless-steel-sifter',
         name: 'Matcha Sifter (Furui)',
         subtitle: 'Fine Mesh • Stainless Steel • 篩',
-        price: 349,
+        price: 199,
         description: 'A dedicated fine-mesh sifter to remove clumps from your matcha powder before whisking, ensuring a perfectly smooth and foam-rich tea every time.',
         images: [
             '/images/sifft_texture_new.jpg',

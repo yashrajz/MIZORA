@@ -45,6 +45,50 @@
     justify-content: center;
 }
 
+/* Navigation Arrows */
+.navArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(11, 26, 18, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    opacity: 0;
+}
+
+.mainImageWrapper:hover .navArrow {
+    opacity: 1;
+}
+
+.navArrow:hover {
+    background-color: rgba(185, 255, 61, 0.2);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.navArrow:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.navArrowLeft {
+    left: 1rem;
+}
+
+.navArrowRight {
+    right: 1rem;
+}
+
 .thumbnails {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -232,8 +276,13 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .buyNowBtn {
