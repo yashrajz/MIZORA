@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Noto_Serif_JP } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
+import ClientLayout from "@/components/ClientLayout";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -39,10 +40,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} ${notoSerifJP.variable}`}>
         <Providers>
-          <EmailVerificationBanner />
-          <Header />
-          {children}
-          <Footer />
+          <ClientLayout>
+            <EmailVerificationBanner />
+            <Header />
+            {children}
+            <Footer />
+          </ClientLayout>
         </Providers>
       </body>
     </html>
